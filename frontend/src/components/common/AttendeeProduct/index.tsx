@@ -87,6 +87,12 @@ export const AttendeeProduct = ({attendee, product, event, hideButtons = false}:
                         </CopyButton>
                     </div>
                 )}
+
+                {!hideButtons && (
+                    <div className={classes.addToWallet}>
+                        <img className={classes.appleWallet} src="/images/Add_To_Apple_Wallet.svg" alt={`Add to Apple Wallet`}/>
+                    </div>
+                )}
             </div>
         </Card>
     );
