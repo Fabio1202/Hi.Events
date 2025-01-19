@@ -17,7 +17,8 @@ import {
     IconTicket,
     IconUserQuestion,
     IconUsers,
-    IconUsersGroup
+    IconUsersGroup,
+    IconBrandApple
 } from "@tabler/icons-react";
 import {useState} from "react";
 import classes from './Event.module.scss';
@@ -64,6 +65,7 @@ const EventLayout = () => {
         {link: 'check-in', label: t`Check-In Lists`, icon: IconQrcode},
         {label: t`Tools`},
         {link: 'homepage-designer', label: t`Homepage Designer`, icon: IconPaint},
+        {link: 'apple-wallet-designer', label: t`Apple Wallet`, icon: IconBrandApple},
         {link: 'widget', label: t`Widget Embed`, icon: IconDeviceTabletCode},
     ];
 

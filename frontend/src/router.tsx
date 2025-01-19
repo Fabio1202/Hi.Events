@@ -310,6 +310,13 @@ export const router: RouteObject[] = [
                 }
             },
             {
+                path: "apple-wallet-designer",
+                async lazy() {
+                    const AppleWalletDesigner = await import("./components/routes/event/AppleWalletDesigner");
+                    return {Component: AppleWalletDesigner.default};
+                }
+            },
+            {
                 path: "getting-started",
                 async lazy() {
                     const GettingStarted = await import("./components/routes/event/GettingStarted");
