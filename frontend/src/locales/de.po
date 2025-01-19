@@ -1103,7 +1103,7 @@ msgstr "Land"
 
 #: src/components/routes/event/HomepageDesigner/index.tsx:81
 msgid "Cover"
-msgstr "Abdeckung"
+msgstr "Cover"
 
 #: src/components/routes/event/attendees.tsx:59
 #: src/components/routes/event/products.tsx:74
