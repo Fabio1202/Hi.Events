@@ -82,4 +82,15 @@
       'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
     ),
   ),
+  'thenextweb/passgenerator' => 
+  array (
+    'aliases' => 
+    array (
+      'PassGenerator' => 'Thenextweb\\Facades\\PassGenerator',
+    ),
+    'providers' => 
+    array (
+      0 => 'Thenextweb\\PassGeneratorServiceProvider',
+    ),
+  ),
 );
