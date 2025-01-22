@@ -5,6 +5,7 @@ use HiEvents\Http\Actions\Accounts\GetAccountAction;
 use HiEvents\Http\Actions\Accounts\Stripe\CreateStripeConnectAccountAction;
 use HiEvents\Http\Actions\Accounts\UpdateAccountAction;
 use HiEvents\Http\Actions\Attendees\CheckInAttendeeAction;
+use HiEvents\Http\Actions\Attendees\CreateApplePasskitActionPublic;
 use HiEvents\Http\Actions\Attendees\CreateAttendeeAction;
 use HiEvents\Http\Actions\Attendees\EditAttendeeAction;
 use HiEvents\Http\Actions\Attendees\ExportAttendeesAction;
@@ -113,6 +114,7 @@ use HiEvents\Http\Actions\Users\ResendInvitationAction;
 use HiEvents\Http\Actions\Users\UpdateMeAction;
 use HiEvents\Http\Actions\Users\UpdateUserAction;
 use Illuminate\Routing\Router;
+use Thenextweb\PassGenerator;
 
 /** @var Router|Router $router */
 $router = app()->get('router');
@@ -269,6 +271,7 @@ $router->prefix('/public')->group(
 
         // Attendees
         $router->get('/events/{event_id}/attendees/{attendee_short_id}', GetAttendeeActionPublic::class);
+        $router->get('/events/{event_id}/attendees/{attendee_short_id}/apple-wallet', CreateApplePasskitActionPublic::class);
 
         // Promo codes
         $router->get('/events/{event_id}/promo-codes/{promo_code}', GetPromoCodePublic::class);

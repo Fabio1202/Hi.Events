@@ -123,11 +123,15 @@
 
     .addToWallet {
 
+      background: none;
+
       margin-top: 1rem;
-      width: 140px;
+      min-width: 140px;
+      height: auto;
 
       .appleWallet {
-        width: 100%;
+        max-width: 100%;
+        min-height: 45px;
       }
     }
   }
