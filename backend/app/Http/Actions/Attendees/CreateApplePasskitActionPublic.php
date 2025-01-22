@@ -5,6 +5,7 @@ namespace HiEvents\Http\Actions\Attendees;
 use HiEvents\DomainObjects\EventSettingDomainObject;
 use HiEvents\DomainObjects\Generated\AttendeeDomainObjectAbstract;
 use HiEvents\DomainObjects\Generated\EventDomainObjectAbstract;
+use HiEvents\DomainObjects\OrganizerDomainObject;
 use HiEvents\DomainObjects\ProductDomainObject;
 use HiEvents\DomainObjects\ProductPriceDomainObject;
 use HiEvents\Http\Actions\BaseAction;
@@ -37,6 +38,12 @@ class CreateApplePasskitActionPublic extends BaseAction
                 new Relationship(
                     domainObject: EventSettingDomainObject::class,
                     name: 'event_settings'
+                )
+            )
+            ->loadRelation(
+                new Relationship(
+                    domainObject: OrganizerDomainObject::class,
+                    name: 'organizer'
                 )
             )
             ->findFirstWhere(

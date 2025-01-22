@@ -6,16 +6,18 @@ use DateTime;
 use DateTimeZone;
 use HiEvents\DomainObjects\AttendeeDomainObject;
 use HiEvents\DomainObjects\EventDomainObject;
-use Thenextweb\PassGenerator;
+use Illuminate\Support\Facades\App;
+use PKPass\PKPass;
 
 class CreateAppleWalletPasskitHandler
 {
 
     public function handle(AttendeeDomainObject $attendee, EventDomainObject $event): \Illuminate\Http\Response
     {
-        $pass_identifier = $attendee->getPublicId();  // This, if set, it would allow for retrieval later on of the created Pass
+        // Laravel set language locael
+        //App::setLocale($attendee->getLocale());
 
-        $pass = new PassGenerator($pass_identifier);
+        $pass = new PKPass(config('pkpass.passCertificatePath'), config('pkpass.passCertificatePassword'));
 
         //Format start date as 2025-05-28T18:00+01:00
         $start_date = new DateTime($event->getStartDate());
@@ -35,16 +37,17 @@ class CreateAppleWalletPasskitHandler
 
 
         $pass_definition = [
-            "description"       => "description",
+            "description"       => $event->getDescription(),
             "formatVersion"     => 1,
-            "organizationName"  => "organization",
-            "passTypeIdentifier"=> "pass.de.faboi.events.test",
-            "serialNumber"      => "123456",
-            "teamIdentifier"    => "9VGSCKT6A4",
+            "organizationName"  => $event->getOrganizer()->getName(),
+            "passTypeIdentifier"=> config('pkpass.passTypeIdentifier'),
+            "serialNumber"      => $event->getShortId() . '-' . $attendee->getPublicId(),
+            "teamIdentifier"    => config('pkpass.teamIdentifier'),
+            "groupingIdentifier"=> $event->getShortId(),
             "foregroundColor"   => hex2rgb($event_settings->getHomepageSecondaryTextColor()),
             "backgroundColor"   => hex2rgb($event_settings->getHomepagePrimaryColor()),
             "labelColor"        => hex2rgb($event_settings->getHomepageSecondaryTextColor()),
-            "logoText"          => "Absolventenfeier 2025",
+            "logoText"          => $event->getTitle(),
             //"voided" => "false",
             "barcode" => [
                 "message"   => $attendee->getPublicId(),
@@ -100,12 +103,17 @@ class CreateAppleWalletPasskitHandler
                         "key" => "venueRoom",
                         "label" => "Room",
                         "value" => "Aula",
+                    ],
+                    [
+                        "key" => "contact",
+                        "label" => "Contact",
+                        "value" => __("If you have any questions or need assistance, feel free to reach out to our friendly support team at") . ": " . $event->getOrganizer()->getEmail(),
                     ]
                 ]
             ],
         ];
 
-        $pass->setPassDefinition($pass_definition);
+        $pass->setData($pass_definition);
 
         // Definitions can also be set from a JSON string
 // $pass->setPassDefinition(file_get_contents('/path/to/pass.json));
@@ -113,8 +121,8 @@ class CreateAppleWalletPasskitHandler
 // Add assets to the PKPass package
 //    $pass->addAsset(base_path('resources/assets/wallet/background.png'));
 //    $pass->addAsset(base_path('resources/assets/wallet/thumbnail.png'));
-        $pass->addAsset(base_path('resources/assets/wallet/icon.png'));
-        $pass->addAsset(base_path('resources/assets/wallet/logo.png'));
+        $pass->addFile(base_path('resources/assets/wallet/icon.png'));
+        $pass->addFile(base_path('resources/assets/wallet/logo.png'));
 
         $pkpass = $pass->create();
 
@@ -124,7 +132,7 @@ class CreateAppleWalletPasskitHandler
             'Content-Description' => 'File Transfer',
             'Content-Disposition' => 'attachment; filename="pass.pkpass"',
             'Content-length' => strlen($pkpass),
-            'Content-Type' => PassGenerator::getPassMimeType(),
+            'Content-Type' => PKPass::MIME_TYPE,
             'Pragma' => 'no-cache',
         ]);
     }
