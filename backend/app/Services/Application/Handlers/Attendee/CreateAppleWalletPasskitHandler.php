@@ -37,7 +37,7 @@ class CreateAppleWalletPasskitHandler
 
 
         $pass_definition = [
-            "description"       => $event->getDescription(),
+            "description"       => $event->getDescriptionPreview(),
             "formatVersion"     => 1,
             "organizationName"  => $event->getOrganizer()->getName(),
             "passTypeIdentifier"=> config('pkpass.passTypeIdentifier'),
@@ -72,13 +72,8 @@ class CreateAppleWalletPasskitHandler
                 "primaryFields" => [
                     [
                         "key" => "name",
-                        "label" => "Name",
+                        "label" => "",
                         "value" => $attendee->getFirstName() . ' ' . $attendee->getLastName(),
-                    ],
-                    [
-                        "key" => "ticketType",
-                        "label" => "Ticket Type",
-                        "value" => $attendee->getProduct()->getTitle(),
                     ]
                 ],
                 "secondaryFields" => [
@@ -89,6 +84,11 @@ class CreateAppleWalletPasskitHandler
                         "type" => "date",
                         "dateStyle" => "PKDateStyleLong",
                         "timeStyle" => "PKDateStyleShort",
+                    ],
+                    [
+                        "key" => "customTicketType",
+                        "label" => "Ticket Type",
+                        "value" => $attendee->getProduct()->getTitle(),
                     ]
                 ],
                 "auxiliaryFields" => [
@@ -106,7 +106,7 @@ class CreateAppleWalletPasskitHandler
                     ],
                     [
                         "key" => "contact",
-                        "label" => "Contact",
+                        "label" => __("Contact"),
                         "value" => __("If you have any questions or need assistance, feel free to reach out to our friendly support team at") . ": " . $event->getOrganizer()->getEmail(),
                     ]
                 ]

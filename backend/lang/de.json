@@ -331,5 +331,9 @@
     "Product type cannot be changed as products have been registered for this type": "Der Produkttyp kann nicht geändert werden, da Produkte für diesen Typ registriert wurden.",
     "The ordered category IDs must exactly match all categories for the event without missing or extra IDs.": "Die bestellten Kategorie-IDs müssen genau mit allen Kategorien der Veranstaltung übereinstimmen, ohne fehlende oder zusätzliche IDs.",
     "The ordered product IDs must exactly match all products for the event without missing or extra IDs.": "Die bestellten Produkt-IDs müssen genau mit allen Produkten der Veranstaltung übereinstimmen, ohne fehlende oder zusätzliche IDs.",
-    "This product is outdated. Please reload the page.": "Dieses Produkt ist veraltet. Bitte laden Sie die Seite neu."
+    "This product is outdated. Please reload the page.": "Dieses Produkt ist veraltet. Bitte laden Sie die Seite neu.",
+    "Notes must be less than 2000 characters": "Notizen dürfen maximal 2000 Zeichen lang sein",
+    "Contact": "Kontakt",
+    "Product price ID is not valid": "Product price ID ist nicht gültig",
+    "There are no products available in this category": "Es gibt keine Produkte in dieser Kategorie"
 }
