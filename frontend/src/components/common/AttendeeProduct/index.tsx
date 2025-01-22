@@ -88,7 +88,7 @@ export const AttendeeProduct = ({attendee, product, event, hideButtons = false}:
                     </div>
                 )}
 
-                {!hideButtons && (
+                {(!hideButtons && event.apple_wallet_enabled) && (
                         <Button className={classes.addToWallet} onClick={() => window.location.href = `${window?.location.origin}/api/public/events/${event.id}/attendees/${attendee.short_id}/apple-wallet`}>
                             <img className={classes.appleWallet} src="/images/Add_To_Apple_Wallet.svg"
                                  alt={`Add to Apple Wallet`}/>

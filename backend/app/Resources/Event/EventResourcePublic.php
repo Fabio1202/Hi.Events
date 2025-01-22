@@ -62,6 +62,7 @@ class EventResourcePublic extends BaseResource
                 condition: !is_null($this->getOrganizer()),
                 value: fn() => new OrganizerResourcePublic($this->getOrganizer()),
             ),
+            'apple_wallet_enabled' => config('pkpass.teamIdentifier') !== null,
         ];
     }
 }
