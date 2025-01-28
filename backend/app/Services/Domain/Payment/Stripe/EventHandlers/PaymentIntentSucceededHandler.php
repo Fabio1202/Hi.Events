@@ -11,28 +11,33 @@ use HiEvents\DomainObjects\Generated\OrderDomainObjectAbstract;
 use HiEvents\DomainObjects\Generated\StripePaymentDomainObjectAbstract;
 use HiEvents\DomainObjects\OrderDomainObject;
 use HiEvents\DomainObjects\OrderItemDomainObject;
+use HiEvents\DomainObjects\Status\AttendeeStatus;
 use HiEvents\DomainObjects\Status\OrderPaymentStatus;
 use HiEvents\DomainObjects\Status\OrderStatus;
 use HiEvents\Events\OrderStatusChangedEvent;
 use HiEvents\Exceptions\CannotAcceptPaymentException;
 use HiEvents\Repository\Eloquent\StripePaymentsRepository;
 use HiEvents\Repository\Eloquent\Value\Relationship;
+use HiEvents\Repository\Interfaces\AttendeeRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
 use HiEvents\Services\Domain\Payment\Stripe\StripeRefundExpiredOrderService;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
 use Illuminate\Database\DatabaseManager;
+use Psr\Log\LoggerInterface;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use Throwable;
 
-readonly class PaymentIntentSucceededHandler
+class PaymentIntentSucceededHandler
 {
     public function __construct(
-        private OrderRepositoryInterface        $orderRepository,
-        private StripePaymentsRepository        $stripePaymentsRepository,
-        private ProductQuantityUpdateService    $quantityUpdateService,
-        private StripeRefundExpiredOrderService $refundExpiredOrderService,
-        private DatabaseManager                 $databaseManager,
+        private readonly OrderRepositoryInterface        $orderRepository,
+        private readonly StripePaymentsRepository        $stripePaymentsRepository,
+        private readonly ProductQuantityUpdateService    $quantityUpdateService,
+        private readonly StripeRefundExpiredOrderService $refundExpiredOrderService,
+        private readonly AttendeeRepositoryInterface     $attendeeRepository,
+        private readonly DatabaseManager                 $databaseManager,
+        private readonly LoggerInterface                 $logger,
     )
     {
     }
@@ -50,11 +55,21 @@ readonly class PaymentIntentSucceededHandler
                     StripePaymentDomainObjectAbstract::PAYMENT_INTENT_ID => $paymentIntent->id,
                 ]);
 
+            if (!$stripePayment) {
+                $this->logger->error('Payment intent not found when handling payment intent succeeded event', [
+                    'paymentIntent' => $paymentIntent->toArray(),
+                ]);
+
+                return;
+            }
+
             $this->validatePaymentAndOrderStatus($stripePayment, $paymentIntent);
 
             $this->updateStripePaymentInfo($paymentIntent, $stripePayment);
 
             $updatedOrder = $this->updateOrderStatuses($stripePayment);
+
+            $this->updateAttendeeStatuses($updatedOrder);
 
             $this->quantityUpdateService->updateQuantitiesFromOrder($updatedOrder);
 
@@ -151,5 +166,18 @@ readonly class PaymentIntentSucceededHandler
         }
 
         $this->handleExpiredOrder($stripePayment, $paymentIntent);
+    }
+
+    private function updateAttendeeStatuses(OrderDomainObject $updatedOrder): void
+    {
+        $this->attendeeRepository->updateWhere(
+            attributes: [
+                'status' => AttendeeStatus::ACTIVE->name,
+            ],
+            where: [
+                'order_id' => $updatedOrder->getId(),
+                'status' => AttendeeStatus::AWAITING_PAYMENT->name,
+            ],
+        );
     }
 }
