@@ -14,9 +14,6 @@ class CreateAppleWalletPasskitHandler
 
     public function handle(AttendeeDomainObject $attendee, EventDomainObject $event): \Illuminate\Http\Response
     {
-        // Laravel set language locael
-        //App::setLocale($attendee->getLocale());
-
         $pass = new PKPass(config('pkpass.passCertificatePath'), config('pkpass.passCertificatePassword'));
 
         //Format start date as 2025-05-28T18:00+01:00
@@ -35,6 +32,19 @@ class CreateAppleWalletPasskitHandler
 
         $event_settings = $event->getEventSettings();
 
+        $backFields = [];
+
+        if ($event_settings->getLocationDetails() != null) {
+            $backFields[] = [
+                "key" => "location",
+                "label" => __("Location"),
+                "value" =>
+                    $event_settings->getLocationDetails()['venue_name'] . "\n" .
+                    $event_settings->getLocationDetails()['address_line_1'] . "\n" .
+                    $event_settings->getLocationDetails()['zip_or_postal_code'] . " " . $event_settings->getLocationDetails()['city'] . "\n" .
+                    $event_settings->getLocationDetails()['country']
+            ];
+        }
 
         $pass_definition = [
             "description"       => $event->getDescriptionPreview(),
@@ -98,18 +108,13 @@ class CreateAppleWalletPasskitHandler
                         "value" => $event->getTitle(),
                     ]
                 ],
-                "backFields" => [
-                    [
-                        "key" => "venueRoom",
-                        "label" => "Room",
-                        "value" => "Aula",
-                    ],
+                "backFields" => array_merge($backFields, [
                     [
                         "key" => "contact",
                         "label" => __("Contact"),
                         "value" => __("If you have any questions or need assistance, feel free to reach out to our friendly support team at") . ": " . $event->getOrganizer()->getEmail(),
                     ]
-                ]
+                ]),
             ],
         ];
 
