@@ -4,21 +4,28 @@ namespace HiEvents\Http\Actions\Orders;
 
 use HiEvents\DomainObjects\Enums\QuestionBelongsTo;
 use HiEvents\DomainObjects\EventDomainObject;
+use HiEvents\DomainObjects\EventSettingDomainObject;
+use HiEvents\DomainObjects\Generated\OrderDomainObjectAbstract;
+use HiEvents\DomainObjects\OrderDomainObject;
+use HiEvents\DomainObjects\PromoCodeDomainObject;
 use HiEvents\DomainObjects\QuestionAndAnswerViewDomainObject;
 use HiEvents\Exports\OrdersExport;
 use HiEvents\Http\Actions\BaseAction;
 use HiEvents\Http\DTO\QueryParamsDTO;
+use HiEvents\Repository\Eloquent\Value\Relationship;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
+use HiEvents\Repository\Interfaces\PromoCodeRepositoryInterface;
 use HiEvents\Repository\Interfaces\QuestionRepositoryInterface;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExportOrdersAction extends BaseAction
 {
     public function __construct(
-        private readonly OrderRepositoryInterface    $orderRepository,
-        private readonly QuestionRepositoryInterface $questionRepository,
-        private readonly OrdersExport                $export
+        private readonly OrderRepositoryInterface     $orderRepository,
+        private readonly QuestionRepositoryInterface  $questionRepository,
+        private readonly OrdersExport                 $export
     )
     {
     }
@@ -31,7 +38,7 @@ class ExportOrdersAction extends BaseAction
             ->loadRelation(QuestionAndAnswerViewDomainObject::class)
             ->findByEventId($eventId, new QueryParamsDTO(
                 page: 1,
-                per_page: 10000,
+                per_page: 10000
             ));
 
         $questions = $this->questionRepository->findWhere([
