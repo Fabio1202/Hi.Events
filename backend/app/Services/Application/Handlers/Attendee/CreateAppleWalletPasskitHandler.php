@@ -54,9 +54,9 @@ class CreateAppleWalletPasskitHandler
             "serialNumber"      => $event->getShortId() . '-' . $attendee->getPublicId(),
             "teamIdentifier"    => config('pkpass.teamIdentifier'),
             "groupingIdentifier"=> $event->getShortId(),
-            "foregroundColor"   => hex2rgb($event_settings->getHomepageSecondaryTextColor()),
+            "foregroundColor"   => hex2rgb("#dcbc7b"),
             "backgroundColor"   => hex2rgb($event_settings->getHomepagePrimaryColor()),
-            "labelColor"        => hex2rgb($event_settings->getHomepageSecondaryTextColor()),
+            "labelColor"        => hex2rgb("#dcbc7b"),
             "logoText"          => $event->getTitle(),
             //"voided" => "false",
             "barcode" => [
