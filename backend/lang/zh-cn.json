@@ -331,5 +331,9 @@
     "Product type cannot be changed as products have been registered for this type": "无法更改产品类型，因为此类型的产品已注册。",
     "The ordered category IDs must exactly match all categories for the event without missing or extra IDs.": "所订购的类别 ID 必须与活动的所有类别完全匹配，不能有遗漏或多余的 ID。",
     "The ordered product IDs must exactly match all products for the event without missing or extra IDs.": "所订购的产品 ID 必须与活动的所有产品完全匹配，不能有遗漏或多余的 ID。",
-    "This product is outdated. Please reload the page.": "此产品已过时。请重新加载页面。"
+    "This product is outdated. Please reload the page.": "此产品已过时。请重新加载页面。",
+    "Notes must be less than 2000 characters": "",
+    "Contact": "",
+    "Product price ID is not valid": "",
+    "There are no products available in this category": ""
 }

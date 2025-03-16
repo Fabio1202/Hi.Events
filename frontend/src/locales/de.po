@@ -164,7 +164,7 @@ msgstr "Ein Datumseingabefeld. Perfekt, um nach einem Geburtsdatum usw. zu frage
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:88
 msgid "A default {type} is automaticaly applied to all new products. You can override this on a per product basis."
-msgstr "Ein standardmäßiger {type} wird automatisch auf alle neuen Produkte angewendet. Sie können dies für jedes Produkt einzeln überschreiben."
+msgstr "Eine standardmäßige {type} wird automatisch auf alle neuen Produkte angewendet. Sie können dies für jedes Produkt einzeln überschreiben."
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:88
 #~ msgid "A default {type} is automaticaly applied to all new tickets. You can override this on a per ticket basis."
@@ -236,7 +236,7 @@ msgstr "Eine einzelne Frage pro Produkt. Z.B., Welche T-Shirt-Größe haben Sie?
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:14
 msgid "A standard tax, like VAT or GST"
-msgstr "Eine Standardsteuer wie Mehrwertsteuer oder GST"
+msgstr "Eine Standardsteuer wie USt. oder MwSt."
 
 #: src/components/layouts/EventHomepage/EventInformation/index.tsx:79
 msgid "About the event"
@@ -542,7 +542,7 @@ msgstr "Promo-Code anwenden"
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:86
 msgid "Apply this {type} to all new products"
-msgstr "Diesen {type} auf alle neuen Produkte anwenden"
+msgstr "Diese {type} auf alle neuen Produkte anwenden"
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:86
 #~ msgid "Apply this {type} to all new tickets"
@@ -1194,7 +1194,7 @@ msgstr "Land"
 
 #: src/components/routes/event/HomepageDesigner/index.tsx:81
 msgid "Cover"
-msgstr "Abdeckung"
+msgstr "Cover"
 
 #: src/components/routes/event/attendees.tsx:59
 #: src/components/routes/event/products.tsx:74
@@ -3975,7 +3975,7 @@ msgstr "Einstellungen"
 #: src/components/modals/ShareModal/index.tsx:123
 #: src/components/modals/ShareModal/index.tsx:141
 msgid "Share"
-msgstr "Aktie"
+msgstr "Teilen"
 
 #: src/components/modals/ShareModal/index.tsx:116
 #: src/components/routes/event/EventDashboard/index.tsx:66
@@ -4606,13 +4606,13 @@ msgstr "Dieser Benutzer ist nicht aktiv, da er die Einladung nicht angenommen ha
 
 #: src/components/common/AttendeeTable/index.tsx:182
 msgid "ticket"
-msgstr "Fahrkarte"
+msgstr "Ticket"
 
 #: src/components/common/AttendeeTable/index.tsx:111
 #: src/components/forms/ProductForm/index.tsx:130
 #: src/components/modals/CreateAttendeeModal/index.tsx:151
 msgid "Ticket"
-msgstr "Fahrkarte"
+msgstr "Ticket"
 
 #: src/components/common/TicketsTable/SortableTicket/index.tsx:52
 #~ msgid "Ticket deleted successfully"
@@ -4710,11 +4710,11 @@ msgstr "Verbleibende Zeit:"
 
 #: src/components/common/PromoCodeTable/index.tsx:71
 msgid "Times used"
-msgstr "Nutzungshäufigkeit"
+msgstr "Einlösungen"
 
 #: src/components/routes/event/Reports/PromoCodesReport/index.tsx:25
 msgid "Times Used"
-msgstr "Anzahl der Verwendungen"
+msgstr "Einlösungen"
 
 #: src/components/forms/OrganizerForm/index.tsx:54
 #: src/components/routes/account/ManageAccount/sections/AccountSettings/index.tsx:82
@@ -4849,7 +4849,7 @@ msgstr "Unbezahlte Bestellung"
 #: src/components/common/EventsDashboardStatusButtons/index.tsx:20
 #: src/components/common/EventStatusBadge/index.tsx:16
 msgid "Upcoming"
-msgstr "Bevorstehende"
+msgstr "Bevorstehend"
 
 #: src/components/routes/events/Dashboard/index.tsx:55
 msgid "Upcoming Events"
@@ -4857,7 +4857,7 @@ msgstr "Bevorstehende Veranstaltungen"
 
 #: src/components/modals/EditTaxOrFeeModal/index.tsx:59
 msgid "Update {0}"
-msgstr "Aktualisierung {0}"
+msgstr "Aktualisiere {0}"
 
 #: src/components/routes/event/Settings/Sections/EventDetailsForm/index.tsx:66
 msgid "Update event name, description and dates"
@@ -4909,7 +4909,7 @@ msgstr "Benutzer"
 
 #: src/components/modals/EditUserModal/index.tsx:81
 msgid "Users can change their email in <0>Profile Settings</0>"
-msgstr "Benutzer können ihre E-Mail in den <0>Profileinstellungen</0> ändern."
+msgstr "Benutzer können ihre E-Mail in den <0>Profileinstellungen</0> ändern"
 
 #: src/components/forms/OrganizerForm/index.tsx:55
 #: src/components/routes/account/ManageAccount/sections/AccountSettings/index.tsx:83
@@ -4917,7 +4917,7 @@ msgstr "Benutzer können ihre E-Mail in den <0>Profileinstellungen</0> ändern."
 #: src/components/routes/event/Settings/Sections/EventDetailsForm/index.tsx:110
 #: src/components/routes/profile/ManageProfile/index.tsx:162
 msgid "UTC"
-msgstr "koordinierte Weltzeit"
+msgstr "UTC"
 
 #: src/components/forms/TaxAndFeeForm/index.tsx:62
 msgid "VAT"
@@ -4954,7 +4954,7 @@ msgstr "Vollständige Nachricht anzeigen"
 
 #: src/components/layouts/EventHomepage/EventInformation/index.tsx:68
 msgid "View map"
-msgstr "Ansichts Karte"
+msgstr "Karte anzeigen"
 
 #: src/components/layouts/EventHomepage/EventInformation/index.tsx:68
 msgid "View on Google Maps"
@@ -4984,7 +4984,7 @@ msgstr "VIP-Ticket"
 
 #: src/components/forms/ProductForm/index.tsx:394
 msgid "Visibility"
-msgstr "Sichtweite"
+msgstr "Sichtbarkeit"
 
 #: src/components/routes/product-widget/PaymentReturn/index.tsx:77
 msgid "We could not process your payment. Please try again or contact support."
@@ -5133,7 +5133,7 @@ msgstr "Arbeiten"
 #: src/components/routes/auth/Register/index.tsx:99
 #: src/components/routes/auth/ResetPassword/index.tsx:62
 msgid "Working..."
-msgstr "Arbeiten..."
+msgstr "In Arbeit..."
 
 #: src/components/common/ReportTable/index.tsx:51
 msgid "Year to date"
@@ -5162,7 +5162,7 @@ msgstr "Sie sind offline"
 
 #: src/components/forms/ProductForm/index.tsx:407
 msgid "You can create a promo code which targets this product on the"
-msgstr "Sie können einen Promo-Code erstellen, der sich auf dieses Produkt richtet auf der"
+msgstr "Sie können einen Promo-Code erstellen, der sich auf dieses Produkt richtet, auf der"
 
 #: src/components/forms/TicketForm/index.tsx:352
 #~ msgid "You can create a promo code which targets this ticket on the"

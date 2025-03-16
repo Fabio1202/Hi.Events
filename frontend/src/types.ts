@@ -176,6 +176,7 @@ export enum EventLifecycleStatus {
 }
 
 export interface Event extends EventBase {
+    apple_wallet_enabled: boolean;
     id?: IdParam;
     slug: string;
     status?: EventStatus;
