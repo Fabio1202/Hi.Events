@@ -94,7 +94,7 @@ export const formatNumber = (number: number) => {
 export const isSsr = () => import.meta.env.SSR;
 
 /**
- * (c) Hi.Events Ltd 2024
+ * (c) Hi.Events Ltd 2025
  *
  * PLEASE NOTE:
  *
@@ -111,7 +111,7 @@ export const iHavePurchasedALicence = () => {
 }
 
 export const isHiEvents = () => {
-    return getConfig('VITE_FRONTEND_URL')?.includes('hi.events');
+    return getConfig('VITE_FRONTEND_URL')?.includes('.hi.events');
 }
 
 export const isEmptyHtml = (content: string) => {

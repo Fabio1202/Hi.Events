@@ -1,7 +1,7 @@
 import {AttendeeTicket} from "../../../common/AttendeeTicket";
 import {Product} from "../../../../types.ts";
 import {PoweredByFooter} from "../../../common/PoweredByFooter";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import {useGetOrderPublic} from "../../../../queries/useGetOrderPublic.ts";
 import {useGetEventPublic} from "../../../../queries/useGetEventPublic.ts";
 import {t} from "@lingui/macro";
@@ -25,7 +25,7 @@ export const PrintOrder = () => {
 
     /*
 /**
- * (c) Hi.Events Ltd 2024
+ * (c) Hi.Events Ltd 2025
  *
  * PLEASE NOTE:
  *

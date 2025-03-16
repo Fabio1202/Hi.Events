@@ -1,5 +1,5 @@
 import {useGetEventPublic} from "../../../../queries/useGetEventPublic.ts";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import {useGetAttendeePublic} from "../../../../queries/useGetAttendeePublic.ts";
 import {AttendeeTicket} from "../../../common/AttendeeTicket";
 import {Attendee, Product} from "../../../../types.ts";
@@ -18,7 +18,7 @@ export const AttendeeProductAndInformation = () => {
     }
 
     /**
-     * (c) Hi.Events Ltd 2024
+     * (c) Hi.Events Ltd 2025
      *
      * PLEASE NOTE:
      *
