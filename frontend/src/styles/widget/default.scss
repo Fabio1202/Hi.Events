@@ -159,8 +159,16 @@
   .hi-promo-code-row {
     display: flex;
     align-items: center;
+    background-color: var(--widget-background-color, var(--tk-color-white));
     margin-bottom: 20px;
     margin-top: 20px;
+
+    .hi-have-a-promo-code-link {
+      background-color: var(--widget-secondary-color, var(--tk-primary));
+      color: var(--widget-secondary-text-color, var(--tk-color-white)) !important;
+      padding: 0.3rem 0.5rem;
+      border-radius: 5px;
+    }
 
     .hi-promo-code-input {
       flex: 1;
