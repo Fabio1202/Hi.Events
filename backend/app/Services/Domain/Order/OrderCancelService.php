@@ -12,19 +12,23 @@ use HiEvents\Repository\Interfaces\AttendeeRepositoryInterface;
 use HiEvents\Repository\Interfaces\EventRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Database\DatabaseManager;
 use Throwable;
 
-readonly class OrderCancelService
+class OrderCancelService
 {
     public function __construct(
-        private Mailer                       $mailer,
-        private AttendeeRepositoryInterface  $attendeeRepository,
-        private EventRepositoryInterface     $eventRepository,
-        private OrderRepositoryInterface     $orderRepository,
-        private DatabaseManager              $databaseManager,
-        private ProductQuantityUpdateService $productQuantityService,
+        private readonly Mailer                       $mailer,
+        private readonly AttendeeRepositoryInterface  $attendeeRepository,
+        private readonly EventRepositoryInterface     $eventRepository,
+        private readonly OrderRepositoryInterface     $orderRepository,
+        private readonly DatabaseManager              $databaseManager,
+        private readonly ProductQuantityUpdateService $productQuantityService,
+        private readonly DomainEventDispatcherService $domainEventDispatcherService,
     )
     {
     }
@@ -51,6 +55,13 @@ readonly class OrderCancelService
                     event: $event,
                     eventSettings: $event->getEventSettings(),
                 ));
+
+            $this->domainEventDispatcherService->dispatch(
+                new OrderEvent(
+                    type: DomainEventType::ORDER_CANCELLED,
+                    orderId: $order->getId(),
+                ),
+            );
         });
     }
 
@@ -70,8 +81,14 @@ readonly class OrderCancelService
     {
         $attendees = $this->attendeeRepository->findWhere([
             'order_id' => $order->getId(),
-            'status' => AttendeeStatus::ACTIVE->name,
-        ]);
+        ])->filter(function (AttendeeDomainObject $attendee) use ($order) {
+            if ($order->isOrderAwaitingOfflinePayment()) {
+                return $attendee->getStatus() === AttendeeStatus::ACTIVE->name
+                    || $attendee->getStatus() === AttendeeStatus::AWAITING_PAYMENT->name;
+            }
+
+            return $attendee->getStatus() === AttendeeStatus::ACTIVE->name;
+        });
 
         $productIdCountMap = $attendees
             ->map(fn(AttendeeDomainObject $attendee) => $attendee->getProductPriceId())->countBy();

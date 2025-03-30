@@ -16,6 +16,9 @@ use HiEvents\Repository\Interfaces\EventSettingsRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
 use HiEvents\Services\Application\Handlers\Order\DTO\TransitionOrderToOfflinePaymentPublicDTO;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Database\DatabaseManager;
 
 class TransitionOrderToOfflinePaymentHandler
@@ -25,6 +28,7 @@ class TransitionOrderToOfflinePaymentHandler
         private readonly OrderRepositoryInterface         $orderRepository,
         private readonly DatabaseManager                  $databaseManager,
         private readonly EventSettingsRepositoryInterface $eventSettingsRepository,
+        private readonly DomainEventDispatcherService     $domainEventDispatcherService,
 
     )
     {
@@ -58,6 +62,13 @@ class TransitionOrderToOfflinePaymentHandler
                 sendEmails: true,
                 createInvoice: $eventSettings->getEnableInvoicing(),
             ));
+
+            $this->domainEventDispatcherService->dispatch(
+                new OrderEvent(
+                    type: DomainEventType::ORDER_CREATED,
+                    orderId: $order->getId(),
+                ),
+            );
 
             return $order;
         });

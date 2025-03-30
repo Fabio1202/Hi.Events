@@ -15,6 +15,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -61,7 +62,10 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function all(array $columns = self::DEFAULT_COLUMNS): Collection
     {
-        return $this->handleResults($this->model->all($columns));
+        $models = $this->model->all($columns);
+        $this->resetModel();
+
+        return $this->handleResults($models);
     }
 
     public function paginate(
@@ -95,7 +99,7 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function simplePaginateWhere(
         array $where,
-        int   $limit = null,
+        ?int   $limit = null,
         array $columns = self::DEFAULT_COLUMNS,
     ): Paginator
     {
@@ -115,14 +119,20 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->handleResults($relation->paginate($this->getPaginationPerPage($limit), $columns));
     }
 
+    /**
+     * @throws ModelNotFoundException
+     */
     public function findById(int $id, array $columns = self::DEFAULT_COLUMNS): DomainObjectInterface
     {
-        return $this->handleSingleResult($this->model->findOrFail($id, $columns));
+        $model = $this->model->findOrFail($id, $columns);
+        $this->resetModel();
+
+        return $this->handleSingleResult($model);
     }
 
     public function findFirstByField(
         string $field,
-        string $value = null,
+        ?string $value = null,
         array  $columns = ['*']
     ): ?DomainObjectInterface
     {
@@ -134,7 +144,10 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function findFirst(int $id, array $columns = self::DEFAULT_COLUMNS): ?DomainObjectInterface
     {
-        return $this->handleSingleResult($this->model->findOrFail($id, $columns));
+        $model = $this->model->findOrFail($id, $columns);
+        $this->resetModel();
+
+        return $this->handleSingleResult($model);
     }
 
     public function findWhere(
@@ -307,6 +320,13 @@ abstract class BaseRepository implements RepositoryInterface
         return $this;
     }
 
+    public function includeDeleted(): static
+    {
+        $this->model = $this->model->withTrashed();
+
+        return $this;
+    }
+
     protected function applyConditions(array $where): void
     {
         foreach ($where as $field => $value) {
@@ -451,7 +471,7 @@ abstract class BaseRepository implements RepositoryInterface
     }
 
     /**
-     * This method will handle nested eager loading of relationships. It works, but it's not pretty.
+     * This method will handle nested eager loading of relationships
      *
      * @param Model $model
      * @param DomainObjectInterface $object
