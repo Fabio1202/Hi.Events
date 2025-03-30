@@ -27,7 +27,7 @@ import {
     IconTrashOff,
 } from "@tabler/icons-react";
 import {useDisclosure} from "@mantine/hooks";
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, useParams} from "react-router";
 import {useEffect} from "react";
 import {CustomSelect, ItemProps} from "../../common/CustomSelect";
 import {formatCurrency, getCurrencySymbol} from "../../../utilites/currency.ts";
@@ -248,7 +248,7 @@ export const ProductForm = ({form, product}: ProductFormProps) => {
                     </Alert>
                 )}
 
-                <TextInput mt={20}
+                <TextInput
                            {...form.getInputProps('title')}
                            label={t`Name`}
                            placeholder={form.values.product_type === 'TICKET' ? t`VIP Ticket` : t`T-shirt`}
@@ -371,7 +371,7 @@ export const ProductForm = ({form, product}: ProductFormProps) => {
                     {(form.values.type === ProductPriceType.Free && !!form.values.tax_and_fee_ids?.length) && (
                         <Alert mb={20}>
                             <p>
-                                {t`You have taxes and fees added to a Free Product. Would you like to remove or obscure them?`}
+                                {t`You have taxes and fees added to a Free Product. Would you like to remove them?`}
                             </p>
                             <Button onClick={removeTaxesAndFees} size={'xs'}>{t`Yes, remove them`}</Button>
                         </Alert>

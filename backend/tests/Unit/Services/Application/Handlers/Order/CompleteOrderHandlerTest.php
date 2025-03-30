@@ -19,6 +19,10 @@ use HiEvents\Services\Application\Handlers\Order\DTO\CompleteOrderDTO;
 use HiEvents\Services\Application\Handlers\Order\DTO\CompleteOrderOrderDTO;
 use HiEvents\Services\Application\Handlers\Order\DTO\CompleteOrderProductDataDTO;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\BaseDomainEvent;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
@@ -38,6 +42,7 @@ class CompleteOrderHandlerTest extends TestCase
     private ProductQuantityUpdateService|MockInterface $productQuantityUpdateService;
     private ProductPriceRepositoryInterface|MockInterface $productPriceRepository;
     private CompleteOrderHandler $completeOrderHandler;
+    private DomainEventDispatcherService $domainEventDispatcherService;
 
     protected function setUp(): void
     {
@@ -52,13 +57,15 @@ class CompleteOrderHandlerTest extends TestCase
         $this->questionAnswersRepository = Mockery::mock(QuestionAnswerRepositoryInterface::class);
         $this->productQuantityUpdateService = Mockery::mock(ProductQuantityUpdateService::class);
         $this->productPriceRepository = Mockery::mock(ProductPriceRepositoryInterface::class);
+        $this->domainEventDispatcherService = Mockery::mock(DomainEventDispatcherService::class);
 
         $this->completeOrderHandler = new CompleteOrderHandler(
             $this->orderRepository,
             $this->attendeeRepository,
             $this->questionAnswersRepository,
             $this->productQuantityUpdateService,
-            $this->productPriceRepository
+            $this->productPriceRepository,
+            $this->domainEventDispatcherService
         );
     }
 
@@ -159,6 +166,13 @@ class CompleteOrderHandlerTest extends TestCase
 
         $this->productQuantityUpdateService->shouldReceive('updateQuantitiesFromOrder')->once();
 
+        $this->domainEventDispatcherService->shouldReceive('dispatch')
+            ->withArgs(function (OrderEvent $event) use ($order) {
+                return $event->type === DomainEventType::ORDER_CREATED
+                    && $event->orderId === $order->getId();
+            })
+            ->once();
+
         $order = $this->completeOrderHandler->handle($orderShortId, $orderData);
 
         $this->assertSame($order->getStatus(), OrderStatus::COMPLETED->name);
@@ -243,10 +257,10 @@ class CompleteOrderHandlerTest extends TestCase
         );
 
         $attendeeDTO = new CompleteOrderProductDataDTO(
+            product_price_id: 1,
             first_name: 'John',
             last_name: 'Doe',
-            email: 'john@example.com',
-            product_price_id: 1
+            email: 'john@example.com'
         );
 
         return new CompleteOrderDTO(

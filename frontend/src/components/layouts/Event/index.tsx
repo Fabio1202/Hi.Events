@@ -1,5 +1,5 @@
 import {Badge, Breadcrumbs, Burger, Button, UnstyledButton, VisuallyHidden} from '@mantine/core';
-import {NavLink, Outlet, useLocation, useParams} from "react-router-dom";
+import {NavLink, Outlet, useLocation, useParams} from "react-router";
 import {
     IconChartPie,
     IconChevronLeft,
@@ -17,7 +17,8 @@ import {
     IconTicket,
     IconUserQuestion,
     IconUsers,
-    IconUsersGroup
+    IconUsersGroup,
+    IconWebhook
 } from "@tabler/icons-react";
 import {useState} from "react";
 import classes from './Event.module.scss';
@@ -65,6 +66,7 @@ const EventLayout = () => {
         {label: t`Tools`},
         {link: 'homepage-designer', label: t`Homepage Designer`, icon: IconPaint},
         {link: 'widget', label: t`Widget Embed`, icon: IconDeviceTabletCode},
+        {link: 'webhooks', label: t`Webhooks`, icon: IconWebhook},
     ];
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -106,6 +108,7 @@ const EventLayout = () => {
             </NavLink>
         );
     });
+
     const handleStatusToggle = () => {
         const message = event?.status === 'LIVE'
             ? t`Are you sure you want to make this event draft? This will make the event invisible to the public`

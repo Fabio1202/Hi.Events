@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {PaymentElement, useElements, useStripe} from "@stripe/react-stripe-js";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import * as stripeJs from "@stripe/stripe-js";
 import {Alert, Skeleton} from "@mantine/core";
 import {t} from "@lingui/macro";
@@ -21,6 +21,25 @@ export default function StripeCheckoutForm({setSubmitHandler}: {
     const [message, setMessage] = useState<string | undefined>('');
     const {data: order, isFetched: isOrderFetched} = useGetOrderPublic(eventId, orderShortId, ['event']);
     const event = order?.event;
+
+    const handleSubmit = async () => {
+        if (!stripe || !elements) {
+            return;
+        }
+
+        const {error} = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                return_url: window?.location.origin + `/checkout/${eventId}/${orderShortId}/payment_return`
+            },
+        });
+
+        if (error?.type === "card_error" || error?.type === "validation_error") {
+            setMessage(error.message);
+        } else {
+            setMessage(t`An unexpected error occurred.`);
+        }
+    };
 
     useEffect(() => {
         if (!stripe) {
@@ -87,25 +106,6 @@ export default function StripeCheckoutForm({setSubmitHandler}: {
             />
         );
     }
-
-    const handleSubmit = async () => {
-        if (!stripe || !elements) {
-            return;
-        }
-
-        const {error} = await stripe.confirmPayment({
-            elements,
-            confirmParams: {
-                return_url: window?.location.origin + `/checkout/${eventId}/${orderShortId}/payment_return`
-            },
-        });
-
-        if (error?.type === "card_error" || error?.type === "validation_error") {
-            setMessage(error.message);
-        } else {
-            setMessage(t`An unexpected error occurred.`);
-        }
-    };
 
     const paymentElementOptions: stripeJs.StripePaymentElementOptions = {
         layout: {

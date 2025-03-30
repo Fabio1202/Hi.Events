@@ -7,6 +7,8 @@ export type ConfigKeys = 'VITE_FRONTEND_URL'
     | 'VITE_API_URL_CLIENT'
     | 'VITE_STRIPE_PUBLISHABLE_KEY'
     | 'VITE_API_URL_SERVER'
+    | 'VITE_CHATWOOT_WEBSITE_TOKEN'
+    | 'VITE_CHATWOOT_BASE_URL'
     | string;
 
 export type IdParam = string | undefined | number;
@@ -41,6 +43,7 @@ export interface User {
     account_id?: IdParam;
     first_name: string;
     last_name: string;
+    full_name: string;
     email: string;
     timezone?: string;
     password?: string;
@@ -62,8 +65,21 @@ export interface Account {
     currency_code?: string;
     password?: string;
     stripe_connect_setup_complete?: boolean;
+    stripe_account_id?: string;
     is_account_email_confirmed?: boolean;
     is_saas_mode_enabled?: boolean;
+    configuration?: AccountConfiguration;
+    requires_manual_verification?: boolean;
+}
+
+export interface AccountConfiguration {
+    id: IdParam;
+    name: string;
+    application_fees: {
+        percentage: number;
+        fixed: number;
+    },
+    is_system_default: boolean;
 }
 
 export interface StripeConnectDetails {
@@ -160,6 +176,7 @@ export interface EventDuplicatePayload extends EventBase {
     duplicate_capacity_assignments: boolean;
     duplicate_check_in_lists: boolean;
     duplicate_event_cover_image: boolean;
+    duplicate_webhooks: boolean;
 }
 
 export enum EventStatus {
@@ -176,7 +193,6 @@ export enum EventLifecycleStatus {
 }
 
 export interface Event extends EventBase {
-    apple_wallet_enabled: boolean;
     id?: IdParam;
     slug: string;
     status?: EventStatus;
@@ -392,7 +408,7 @@ export interface Attendee {
     check_in?: AttendeeCheckIn;
 }
 
-export type PublicCheckIn = Pick<AttendeeCheckIn, 'id' | 'attendee_id' | 'check_in_list_id' | 'product_id' | 'event_id'>;
+export type PublicCheckIn = Pick<AttendeeCheckIn, 'id' | 'order_id' | 'attendee_id' | 'check_in_list_id' | 'product_id' | 'event_id'>;
 
 export interface AttendeeCheckIn {
     id: IdParam;
@@ -401,6 +417,7 @@ export interface AttendeeCheckIn {
     product_id: IdParam;
     event_id: IdParam;
     short_id: IdParam;
+    order_id: IdParam;
     created_at: string;
 }
 
@@ -458,6 +475,7 @@ export interface Order {
     question_answers?: QuestionAnswer[];
     event?: Event;
     latest_invoice?: Invoice;
+    session_identifier?: string;
 }
 
 export interface Invoice {
@@ -558,7 +576,7 @@ export interface Message {
     subject: string;
     message: string;
     message_preview: string;
-    type: 'PRODUCT' | 'EVENT';
+    type: MessageType;
     is_test: boolean;
     order_id?: number;
     attendee_ids?: IdParam[];
@@ -630,10 +648,11 @@ export interface MessageOrderRequest {
 }
 
 export enum MessageType {
-    Attendee = 'ATTENDEE',
-    Order = 'ORDER',
-    Product = 'PRODUCT',
-    Event = 'EVENT',
+    IndividualAttendees = 'INDIVIDUAL_ATTENDEES',
+    OrderOwner = 'ORDER_OWNER',
+    TicketHolders = 'TICKET_HOLDERS',
+    AllAttendees = 'ALL_ATTENDEES',
+    OrderOwnersWithProduct = 'ORDER_OWNERS_WITH_PRODUCT',
 }
 
 export interface PromoCode {
@@ -700,12 +719,41 @@ export interface QuestionAnswer {
     belongs_to: string;
     question_type: string;
     attendee_id?: number;
+    attendee_public_id?: IdParam;
     first_name?: string;
     last_name?: string;
+    question_answer_id?: IdParam;
+    question_description?: string;
+    question_required?: boolean;
+    question_options?: string[];
 }
 
 export enum ReportTypes {
     ProductSales = 'product_sales',
     DailySales = 'daily_sales_report',
     PromoCodes = 'promo_codes_report',
+}
+
+export interface Webhook {
+    id: IdParam;
+    event_id: IdParam;
+    url: string;
+    secret: string;
+    status: 'ENABLED' | 'PAUSED';
+    event?: Event;
+    event_types?: string[];
+    last_response_code?: number;
+    last_response_body?: string;
+    last_triggered_at?: string | Date;
+    logs?: WebhookLog[];
+}
+
+export interface WebhookLog {
+    id: IdParam;
+    webhook_id: IdParam;
+    payload?: string;
+    response_code?: number; // 0 = no response
+    response_body?: string;
+    event_type: string;
+    created_at: string;
 }

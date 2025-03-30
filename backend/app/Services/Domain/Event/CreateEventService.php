@@ -14,7 +14,7 @@ use HiEvents\Repository\Interfaces\EventRepositoryInterface;
 use HiEvents\Repository\Interfaces\EventSettingsRepositoryInterface;
 use HiEvents\Repository\Interfaces\EventStatisticRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrganizerRepositoryInterface;
-use HTMLPurifier;
+use HiEvents\Services\Infrastructure\HtmlPurifier\HtmlPurifierService;
 use Illuminate\Database\DatabaseManager;
 use Throwable;
 
@@ -26,7 +26,7 @@ class CreateEventService
         private readonly OrganizerRepositoryInterface      $organizerRepository,
         private readonly DatabaseManager                   $databaseManager,
         private readonly EventStatisticRepositoryInterface $eventStatisticsRepository,
-        private readonly HTMLPurifier                      $purifier,
+        private readonly HtmlPurifierService               $purifier,
     )
     {
     }
@@ -39,26 +39,24 @@ class CreateEventService
         EventSettingDomainObject $eventSettings = null
     ): EventDomainObject
     {
-        $this->databaseManager->beginTransaction();
+        return $this->databaseManager->transaction(function () use ($eventData, $eventSettings) {
+            $organizer = $this->getOrganizer(
+                organizerId: $eventData->getOrganizerId(),
+                accountId: $eventData->getAccountId()
+            );
 
-        $organizer = $this->getOrganizer(
-            organizerId: $eventData->getOrganizerId(),
-            accountId: $eventData->getAccountId()
-        );
+            $event = $this->handleEventCreate($eventData);
 
-        $event = $this->handleEventCreate($eventData);
+            $this->createEventSettings(
+                eventSettings: $eventSettings,
+                event: $event,
+                organizer: $organizer
+            );
 
-        $this->createEventSettings(
-            eventSettings: $eventSettings,
-            event: $event,
-            organizer: $organizer
-        );
+            $this->createEventStatistics($event);
 
-        $this->createEventStatistics($event);
-
-        $this->databaseManager->commit();
-
-        return $event;
+            return $event;
+        });
     }
 
     /**
@@ -150,7 +148,7 @@ class CreateEventService
             'invoice_label' => __('Invoice'),
             'invoice_prefix' => 'INV-',
             'invoice_start_number' => 1,
-            'require_billing_address' => true,
+            'require_billing_address' => false,
             'organization_name' => $organizer->getName(),
             'organization_address' => null,
             'invoice_tax_details' => null,

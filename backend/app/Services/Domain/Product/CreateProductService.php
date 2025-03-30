@@ -9,7 +9,10 @@ use HiEvents\Repository\Interfaces\EventRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductRepositoryInterface;
 use HiEvents\Services\Domain\Tax\DTO\TaxAndProductAssociateParams;
 use HiEvents\Services\Domain\Tax\TaxAndProductAssociationService;
-use HTMLPurifier;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\ProductEvent;
+use HiEvents\Services\Infrastructure\HtmlPurifier\HtmlPurifierService;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Collection;
 use Throwable;
@@ -21,9 +24,10 @@ class CreateProductService
         private readonly DatabaseManager                 $databaseManager,
         private readonly TaxAndProductAssociationService $taxAndProductAssociationService,
         private readonly ProductPriceCreateService       $priceCreateService,
-        private readonly HTMLPurifier                    $purifier,
+        private readonly HtmlPurifierService             $purifier,
         private readonly EventRepositoryInterface        $eventRepository,
         private readonly ProductOrderingService          $productOrderingService,
+        private readonly DomainEventDispatcherService    $domainEventDispatcherService,
     )
     {
     }
@@ -44,7 +48,16 @@ class CreateProductService
                 $this->associateTaxesAndFees($persistedProduct, $taxAndFeeIds, $accountId);
             }
 
-            return $this->createProductPrices($persistedProduct, $product);
+            $product = $this->createProductPrices($persistedProduct, $product);
+
+            $this->domainEventDispatcherService->dispatch(
+                new ProductEvent(
+                    type: DomainEventType::PRODUCT_CREATED,
+                    productId: $product->getId(),
+                )
+            );
+
+            return $product;
         });
     }
 

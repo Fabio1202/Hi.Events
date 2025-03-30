@@ -58,13 +58,14 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             __('Currency'),
             __('Created At'),
             __('Public ID'),
-            __('Payment Gateway'),
+            __('Payment Provider'),
             __('Is Partially Refunded'),
             __('Is Fully Refunded'),
             __('Is Free Order'),
             __('Is Manually Created'),
             __('Billing Address'),
-            __('Notes')
+            __('Notes'),
+            __('Promo Code'),
         ], $questionTitles);
     }
 
@@ -100,13 +101,14 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $order->getCurrency(),
             Carbon::parse($order->getCreatedAt())->format('Y-m-d H:i:s'),
             $order->getPublicId(),
-            $order->getPaymentGateway(),
+            $order->getPaymentProvider(),
             $order->isPartiallyRefunded(),
             $order->isFullyRefunded(),
             $order->isFreeOrder(),
             $order->getIsManuallyCreated(),
             $order->getBillingAddressString(),
             $order->getNotes(),
+            $order->getPromoCode(),
         ], $answers->toArray());
     }
 

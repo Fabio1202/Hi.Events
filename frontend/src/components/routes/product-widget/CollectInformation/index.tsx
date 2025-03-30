@@ -1,6 +1,6 @@
 import {useMutation} from "@tanstack/react-query";
 import {FinaliseOrderPayload, orderClientPublic} from "../../../../api/order.client.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router";
 import {Button, Group, NativeSelect, Skeleton, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {notifications} from "@mantine/notifications";
@@ -8,7 +8,7 @@ import {useGetOrderPublic} from "../../../../queries/useGetOrderPublic.ts";
 import {useGetEventPublic} from "../../../../queries/useGetEventPublic.ts";
 import {useGetEventQuestionsPublic} from "../../../../queries/useGetEventQuestionsPublic.ts";
 import {CheckoutOrderQuestions, CheckoutProductQuestions} from "../../../common/CheckoutQuestion";
-import {Event, Order, Question} from "../../../../types.ts";
+import {Event, IdParam, Order, Question} from "../../../../types.ts";
 import {useEffect} from "react";
 import {t} from "@lingui/macro";
 import {InputGroup} from "../../../common/InputGroup";
@@ -80,20 +80,33 @@ export const CollectInformation = () => {
     });
 
     const copyDetailsToAllAttendees = () => {
-        const updatedProducts = form.values.products.map((product) => {
-            return {
-                ...product,
-                first_name: form.values.order.first_name,
-                last_name: form.values.order.last_name,
-                email: form.values.order.email,
-            };
+        if (!products) {
+            return;
+        }
+
+        const attendeeProductIds = new Set<IdParam>(
+            products
+                .filter(product => product && product.product_type === 'TICKET')
+                .map(product => product.id)
+        );
+
+        const updatedProducts = form.values.products.map(product => {
+            if (attendeeProductIds.has(product.product_id)) {
+                return {
+                    ...product,
+                    first_name: form.values.order.first_name,
+                    last_name: form.values.order.last_name,
+                    email: form.values.order.email,
+                };
+            }
+            return product;
         });
 
         form.setValues({
             ...form.values,
             products: updatedProducts,
         });
-    }
+    };
 
     const mutation = useMutation({
         mutationFn: (orderData: FinaliseOrderPayload) => orderClientPublic.finaliseOrder(Number(eventId), String(orderShortId), orderData),
@@ -428,7 +441,7 @@ export const CollectInformation = () => {
                 buttonContent={order?.is_payment_required ? (
                     <Group gap={'10px'}>
                         <div style={{fontWeight: "bold"}}>
-                            Continue
+                            {t`Continue`}
                         </div>
                         <div style={{fontSize: 14}}>
                             {formatCurrency(order.total_gross, order.currency)}

@@ -7,9 +7,12 @@ use Brick\Math\Exception\NumberFormatException;
 use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
+use HiEvents\DomainObjects\AccountConfigurationDomainObject;
 use HiEvents\DomainObjects\Generated\StripePaymentDomainObjectAbstract;
 use HiEvents\DomainObjects\OrderItemDomainObject;
+use HiEvents\DomainObjects\Status\OrderStatus;
 use HiEvents\DomainObjects\StripePaymentDomainObject;
+use HiEvents\Exceptions\ResourceConflictException;
 use HiEvents\Exceptions\Stripe\CreatePaymentIntentFailedException;
 use HiEvents\Exceptions\UnauthorizedException;
 use HiEvents\Repository\Eloquent\Value\Relationship;
@@ -20,6 +23,8 @@ use HiEvents\Services\Domain\Payment\Stripe\DTOs\CreatePaymentIntentRequestDTO;
 use HiEvents\Services\Domain\Payment\Stripe\DTOs\CreatePaymentIntentResponseDTO;
 use HiEvents\Services\Domain\Payment\Stripe\StripePaymentIntentCreationService;
 use HiEvents\Services\Infrastructure\Session\CheckoutSessionManagementService;
+use Stripe\Exception\ApiErrorException;
+use Throwable;
 
 readonly class CreatePaymentIntentHandler
 {
@@ -28,17 +33,21 @@ readonly class CreatePaymentIntentHandler
         private StripePaymentIntentCreationService $stripePaymentService,
         private CheckoutSessionManagementService   $sessionIdentifierService,
         private StripePaymentsRepositoryInterface  $stripePaymentsRepository,
-        private AccountRepositoryInterface         $accountRepository
+        private AccountRepositoryInterface         $accountRepository,
     )
     {
     }
 
     /**
+     * @param string $orderShortId
+     * @return CreatePaymentIntentResponseDTO
+     * @throws CreatePaymentIntentFailedException
      * @throws MathException
      * @throws NumberFormatException
      * @throws RoundingNecessaryException
      * @throws UnknownCurrencyException
-     * @throws CreatePaymentIntentFailedException
+     * @throws ApiErrorException
+     * @throws Throwable
      */
     public function handle(string $orderShortId): CreatePaymentIntentResponseDTO
     {
@@ -51,7 +60,16 @@ readonly class CreatePaymentIntentHandler
             throw new UnauthorizedException(__('Sorry, we could not verify your session. Please create a new order.'));
         }
 
-        $account = $this->accountRepository->findByEventId($order->getEventId());
+        if ($order->getStatus() !== OrderStatus::RESERVED->name || $order->isReservedOrderExpired()) {
+            throw new ResourceConflictException(__('Sorry, is expired or not in a valid state.'));
+        }
+
+        $account = $this->accountRepository
+            ->loadRelation(new Relationship(
+                domainObject: AccountConfigurationDomainObject::class,
+                name: 'configuration',
+            ))
+            ->findByEventId($order->getEventId());
 
         // If we already have a Stripe session then re-fetch the client secret
         if ($order->getStripePayment() !== null) {
@@ -76,6 +94,7 @@ readonly class CreatePaymentIntentHandler
             StripePaymentDomainObjectAbstract::ORDER_ID => $order->getId(),
             StripePaymentDomainObjectAbstract::PAYMENT_INTENT_ID => $paymentIntent->paymentIntentId,
             StripePaymentDomainObjectAbstract::CONNECTED_ACCOUNT_ID => $account->getStripeAccountId(),
+            StripePaymentDomainObjectAbstract::APPLICATION_FEE => $paymentIntent->applicationFeeAmount,
         ]);
 
         return $paymentIntent;

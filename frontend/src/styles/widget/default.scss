@@ -51,6 +51,7 @@
           .hi-product-title-metadata {
             margin-left: 5px;
             font-weight: normal;
+            display: flex;
           }
 
           .hi-product-collapse-arrow {
@@ -175,6 +176,12 @@
       background-color: var(--widget-secondary-color, var(--tk-primary));
       color: var(--widget-secondary-text-color, var(--tk-color-white));
       border: none;
+    }
+
+    .hi-close-promo-code-input-button {
+        background-color: var(--widget-secondary-color, var(--tk-primary));
+        color: var(--widget-secondary-text-color, var(--tk-color-white));
+        border: none;
     }
 
     .hi-promo-code-applied {

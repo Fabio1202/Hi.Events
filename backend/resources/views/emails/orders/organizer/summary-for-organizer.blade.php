@@ -20,6 +20,8 @@
 </div>
 @endif
 
+{{ __('Name') }}: <b>{{ $order->getFullName() }}</b><br>
+{{ __('Email') }}: <b>{{ $order->getEmail() }}</b><br>
 {{ __('Order Amount:') }} <b>{{ Currency::format($order->getTotalGross(), $event->getCurrency()) }}</b><br>
 {{ __('Order ID:') }} <b>{{ $order->getPublicId() }}</b><br>
 {{ __('Order Status:') }} <b>{{ $order->getHumanReadableStatus() }}</b>
@@ -29,39 +31,6 @@
     {{ __('View Order') }}
 </x-mail::button>
 
-<div class="table">
-    <table>
-        <thead>
-        <tr>
-            <td><b>{{ __('Ticket') }}</b></td>
-            <td><b>{{ __('Price') }}</b></td>
-            <td><b>{{ __('Total') }}</b></td>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach ($order->getOrderItems() as $ticket)
-            <tr>
-                <td>
-                    <b>{{ $ticket->getItemName() }} </b> x {{ $ticket->getQuantity()}}
-                </td>
-                <td>{{ Currency::format($ticket->getPrice() * $ticket->getQuantity(), $event->getCurrency()) }} </td>
-            </tr>
-        @endforeach
-        <tr>
-            <td colspan="3">
-                <b>{{ __('Total') }}</b>
-            </td>
-            <td>
-                {{ Currency::format($order->getTotalGross(), $event->getCurrency()) }}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-{{ __('Best regards') }},
-<br>
-{{config('app.name')}}
 </x-mail::message>
 
 

@@ -7,6 +7,9 @@ use HiEvents\DomainObjects\Status\AttendeeStatus;
 use HiEvents\Repository\Interfaces\AttendeeRepositoryInterface;
 use HiEvents\Services\Application\Handlers\Attendee\DTO\PartialEditAttendeeDTO;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\AttendeeEvent;
 use Illuminate\Database\DatabaseManager;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Throwable;
@@ -16,7 +19,8 @@ class PartialEditAttendeeHandler
     public function __construct(
         private readonly AttendeeRepositoryInterface  $attendeeRepository,
         private readonly ProductQuantityUpdateService $productQuantityService,
-        private readonly DatabaseManager              $databaseManager
+        private readonly DatabaseManager              $databaseManager,
+        private readonly DomainEventDispatcherService $domainEventDispatcherService,
     )
     {
     }
@@ -42,8 +46,19 @@ class PartialEditAttendeeHandler
             throw new ResourceNotFoundException();
         }
 
-        if ($data->status && $data->status !== $attendee->getStatus()) {
+        $statusIsUpdated = $data->status && $data->status !== $attendee->getStatus();
+
+        if ($statusIsUpdated) {
             $this->adjustProductQuantity($data, $attendee);
+        }
+
+        if ($statusIsUpdated && $data->status === AttendeeStatus::CANCELLED->name) {
+            $this->domainEventDispatcherService->dispatch(
+                new AttendeeEvent(
+                    type: DomainEventType::ATTENDEE_CANCELLED,
+                    attendeeId: $attendee->getId(),
+                )
+            );
         }
 
         return $this->attendeeRepository->updateByIdWhere(

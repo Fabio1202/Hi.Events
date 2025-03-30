@@ -1,4 +1,4 @@
-import {Navigate, RouteObject} from "react-router-dom";
+import {Navigate, RouteObject} from "react-router";
 import ErrorPage from "./error-page.tsx";
 import {eventsClientPublic} from "./api/event.client.ts";
 import {promoCodeClientPublic} from "./api/promo-code.client.ts";
@@ -322,6 +322,13 @@ export const router: RouteObject[] = [
                     const CapacityAssignments = await import("./components/routes/event/CapacityAssignments");
                     return {Component: CapacityAssignments.default};
                 }
+            },
+            {
+                path: "webhooks",
+                async lazy() {
+                    const Webhooks = await import("./components/routes/event/Webhooks");
+                    return {Component: Webhooks.default};
+                }
             }
         ]
     },
@@ -332,6 +339,13 @@ export const router: RouteObject[] = [
             return {Component: EventHomepage.default};
         },
         errorElement: <ErrorPage/>,
+    },
+    {
+        path: "/event/:eventId/preview",
+        async lazy() {
+            const EventHomepagePreview = await import("./components/layouts/EventHomepagePreview");
+            return {Component: EventHomepagePreview.default};
+        },
     },
     {
         path: "/event/:eventId/:eventSlug",

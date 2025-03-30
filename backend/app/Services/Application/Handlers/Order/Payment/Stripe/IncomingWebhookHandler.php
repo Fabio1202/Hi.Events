@@ -8,6 +8,7 @@ use HiEvents\Services\Domain\Payment\Stripe\EventHandlers\AccountUpdateHandler;
 use HiEvents\Services\Domain\Payment\Stripe\EventHandlers\ChargeRefundUpdatedHandler;
 use HiEvents\Services\Domain\Payment\Stripe\EventHandlers\PaymentIntentFailedHandler;
 use HiEvents\Services\Domain\Payment\Stripe\EventHandlers\PaymentIntentSucceededHandler;
+use Illuminate\Cache\Repository;
 use Illuminate\Log\Logger;
 use JsonException;
 use Stripe\Event;
@@ -16,14 +17,22 @@ use Stripe\Webhook;
 use Throwable;
 use UnexpectedValueException;
 
-readonly class IncomingWebhookHandler
+class IncomingWebhookHandler
 {
+    private static array $validEvents = [
+        Event::PAYMENT_INTENT_SUCCEEDED,
+        Event::PAYMENT_INTENT_PAYMENT_FAILED,
+        Event::CHARGE_REFUND_UPDATED,
+        Event::ACCOUNT_UPDATED,
+    ];
+
     public function __construct(
-        private ChargeRefundUpdatedHandler    $refundEventHandlerService,
-        private PaymentIntentSucceededHandler $paymentIntentSucceededHandler,
-        private PaymentIntentFailedHandler    $paymentIntentFailedHandler,
-        private AccountUpdateHandler          $accountUpdateHandler,
-        private Logger                        $logger
+        private readonly ChargeRefundUpdatedHandler    $refundEventHandlerService,
+        private readonly PaymentIntentSucceededHandler $paymentIntentSucceededHandler,
+        private readonly PaymentIntentFailedHandler    $paymentIntentFailedHandler,
+        private readonly AccountUpdateHandler          $accountUpdateHandler,
+        private readonly Logger                        $logger,
+        private readonly Repository                    $cache,
     )
     {
     }
@@ -42,6 +51,27 @@ readonly class IncomingWebhookHandler
                 config('services.stripe.webhook_secret'),
             );
 
+            if (!in_array($event->type, self::$validEvents, true)) {
+                $this->logger->debug(__('Received a :event Stripe event, which has no handler', [
+                    'event' => $event->type,
+                ]), [
+                    'event_id' => $event->id,
+                    'event_type' => $event->type,
+                ]);
+
+                return;
+            }
+
+            if ($this->hasEventBeenHandled($event)) {
+                $this->logger->debug('Stripe event already handled', [
+                    'event_id' => $event->id,
+                    'type' => $event->type,
+                    'data' => $event->data->object->toArray(),
+                ]);
+
+                return;
+            }
+
             $this->logger->debug('Stripe event received', $event->data->object->toArray());
 
             switch ($event->type) {
@@ -57,9 +87,9 @@ readonly class IncomingWebhookHandler
                 case Event::ACCOUNT_UPDATED:
                     $this->accountUpdateHandler->handleEvent($event->data->object);
                     break;
-                default:
-                    $this->logger->debug(sprintf('Unhandled Stripe webhook: %s', $event->type));
             }
+
+            $this->markEventAsHandled($event);
         } catch (CannotAcceptPaymentException $exception) {
             $this->logger->error(
                 'Cannot accept payment: ' . $exception->getMessage(), [
@@ -87,5 +117,19 @@ readonly class IncomingWebhookHandler
             ]);
             throw $exception;
         }
+    }
+
+    private function hasEventBeenHandled(Event $event): bool
+    {
+        return $this->cache->has('stripe_event_' . $event->id);
+    }
+
+    private function markEventAsHandled(Event $event): void
+    {
+        $this->logger->info('Marking Stripe event as handled', [
+            'event_id' => $event->id,
+            'type' => $event->type,
+        ]);
+        $this->cache->put('stripe_event_' . $event->id, true, now()->addMinutes(60));
     }
 }

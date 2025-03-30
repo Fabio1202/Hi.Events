@@ -33,7 +33,6 @@ class OrderResource extends BaseResource
             'email' => $this->getEmail(),
             'created_at' => $this->getCreatedAt(),
             'public_id' => $this->getPublicId(),
-            'payment_gateway' => $this->getPaymentGateway(),
             'is_partially_refunded' => $this->isPartiallyRefunded(),
             'is_fully_refunded' => $this->isFullyRefunded(),
             'is_free_order' => $this->isFreeOrder(),
@@ -42,6 +41,7 @@ class OrderResource extends BaseResource
             'address' => $this->getAddress(),
             'notes' => $this->getNotes(),
             'payment_provider' => $this->getPaymentProvider(),
+            'promo_code' => $this->getPromoCode(),
             'order_items' => $this->when(
                 !is_null($this->getOrderItems()),
                 fn() => OrderItemResource::collection($this->getOrderItems())

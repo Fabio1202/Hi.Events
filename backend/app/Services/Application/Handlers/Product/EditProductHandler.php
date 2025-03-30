@@ -13,12 +13,14 @@ use HiEvents\Helper\DateHelper;
 use HiEvents\Repository\Interfaces\EventRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductRepositoryInterface;
 use HiEvents\Services\Application\Handlers\Product\DTO\UpsertProductDTO;
-use HiEvents\Services\Domain\Product\ProductOrderingService;
 use HiEvents\Services\Domain\Product\ProductPriceUpdateService;
 use HiEvents\Services\Domain\ProductCategory\GetProductCategoryService;
 use HiEvents\Services\Domain\Tax\DTO\TaxAndProductAssociateParams;
 use HiEvents\Services\Domain\Tax\TaxAndProductAssociationService;
-use HTMLPurifier;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\ProductEvent;
+use HiEvents\Services\Infrastructure\HtmlPurifier\HtmlPurifierService;
 use Illuminate\Database\DatabaseManager;
 use Throwable;
 
@@ -32,10 +34,10 @@ class EditProductHandler
         private readonly TaxAndProductAssociationService $taxAndProductAssociationService,
         private readonly DatabaseManager                 $databaseManager,
         private readonly ProductPriceUpdateService       $priceUpdateService,
-        private readonly HTMLPurifier                    $purifier,
+        private readonly HtmlPurifierService             $purifier,
         private readonly EventRepositoryInterface        $eventRepository,
-        private readonly ProductOrderingService          $productOrderingService,
         private readonly GetProductCategoryService       $getProductCategoryService,
+        private readonly DomainEventDispatcherService    $domainEventDispatcherService,
     )
     {
     }
@@ -62,6 +64,13 @@ class EditProductHandler
                 $this->eventRepository->findById($productsData->event_id)
             );
 
+            $this->domainEventDispatcherService->dispatch(
+                new ProductEvent(
+                    type: DomainEventType::PRODUCT_UPDATED,
+                    productId: $product->getId(),
+                )
+            );
+
             return $this->productRepository
                 ->loadRelation(ProductPriceDomainObject::class)
                 ->findById($product->getId());
@@ -86,10 +95,6 @@ class EditProductHandler
             attributes: [
                 'title' => $productsData->title,
                 'type' => $productsData->type->name,
-                'order' => $this->productOrderingService->getOrderForNewProduct(
-                    eventId: $productsData->event_id,
-                    productCategoryId: $productCategory->getId(),
-                ),
                 'sale_start_date' => $productsData->sale_start_date
                     ? DateHelper::convertToUTC($productsData->sale_start_date, $event->getTimezone())
                     : null,
