@@ -3,7 +3,6 @@ import {useParams} from "react-router";
 import {useGetEvent} from "../../../queries/useGetEvent.ts";
 import {useGetOrder} from "../../../queries/useGetOrder.ts";
 import {OrderSummary} from "../../common/OrderSummary";
-import {Modal} from "../../common/Modal";
 import {AttendeeList} from "../../common/AttendeeList";
 import {OrderDetails} from "../../common/OrderDetails";
 import {t} from "@lingui/macro";
@@ -22,6 +21,7 @@ import {InputGroup} from "../../common/InputGroup";
 import {InputLabelWithHelp} from "../../common/InputLabelWithHelp";
 import classes from './ManageOrderModal.module.scss';
 import {EditOrderPayload} from "../../../api/order.client.ts";
+import {SideDrawer} from "../../common/SideDrawer";
 
 interface ManageOrderModalProps {
     orderId: IdParam;
@@ -29,7 +29,7 @@ interface ManageOrderModalProps {
 
 export const ManageOrderModal = ({onClose, orderId}: GenericModalProps & ManageOrderModalProps) => {
     const {eventId} = useParams();
-    const {data: order} = useGetOrder(eventId, orderId);
+    const {data: order, refetch: refetchOrder} = useGetOrder(eventId, orderId);
     const {data: event, data: {product_categories: productCategories} = {}} = useGetEvent(eventId);
     const products = productCategories?.flatMap(category => category.products);
     const orderHasQuestions = order?.question_answers && order.question_answers.length > 0;
@@ -111,7 +111,9 @@ export const ManageOrderModal = ({onClose, orderId}: GenericModalProps & ManageO
             title: t`Questions & Answers`,
             count: orderHasQuestions ? order.question_answers.length : undefined,
             content: orderHasQuestions ? (
-                <QuestionAndAnswerList questionAnswers={order.question_answers as QuestionAnswer[]}/>
+                <QuestionAndAnswerList
+                    onEditAnswer={refetchOrder}
+                    questionAnswers={order.question_answers as QuestionAnswer[]}/>
             ) : (
                 <Text c="dimmed" ta="center" py="xl">
                     {t`No questions have been asked for this order.`}
@@ -124,7 +126,7 @@ export const ManageOrderModal = ({onClose, orderId}: GenericModalProps & ManageO
             title: t`Attendees`,
             count: orderHasAttendees ? order.attendees.length : undefined,
             content: orderHasAttendees ? (
-                <AttendeeList order={order} products={products as Product[]}/>
+                <AttendeeList refetchOrder={refetchOrder} order={order} products={products as Product[]} questionAnswers={order.question_answers}/>
             ) : (
                 <Text c="dimmed" ta="center" py="xl">
                     {t`No attendees have been added to this order.`}
@@ -177,7 +179,7 @@ export const ManageOrderModal = ({onClose, orderId}: GenericModalProps & ManageO
     );
 
     return (
-        <Modal
+        <SideDrawer
             opened={true}
             onClose={onClose}
             size="lg"
@@ -215,6 +217,6 @@ export const ManageOrderModal = ({onClose, orderId}: GenericModalProps & ManageO
                     </Box>
                 </Tabs>
             </Stack>
-        </Modal>
+        </SideDrawer>
     );
 };

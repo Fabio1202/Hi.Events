@@ -13,6 +13,9 @@ use HiEvents\Repository\Interfaces\AttendeeRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductRepositoryInterface;
 use HiEvents\Services\Application\Handlers\Attendee\DTO\EditAttendeeDTO;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\AttendeeEvent;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -24,6 +27,7 @@ class EditAttendeeHandler
         private readonly ProductRepositoryInterface   $productRepository,
         private readonly ProductQuantityUpdateService $productQuantityService,
         private readonly DatabaseManager              $databaseManager,
+        private readonly DomainEventDispatcherService $domainEventDispatcherService,
     )
     {
     }
@@ -41,7 +45,16 @@ class EditAttendeeHandler
 
             $this->adjustProductQuantities($attendee, $editAttendeeDTO);
 
-            return $this->updateAttendee($editAttendeeDTO);
+            $updatedAttendee = $this->updateAttendee($editAttendeeDTO);
+
+            $this->domainEventDispatcherService->dispatch(
+                new AttendeeEvent(
+                    type: DomainEventType::ATTENDEE_UPDATED,
+                    attendeeId: $updatedAttendee->getId(),
+                )
+            );
+
+            return $updatedAttendee;
         });
     }
 

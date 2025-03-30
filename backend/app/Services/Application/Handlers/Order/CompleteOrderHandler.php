@@ -33,6 +33,9 @@ use HiEvents\Services\Application\Handlers\Order\DTO\CreatedProductDataDTO;
 use HiEvents\Services\Application\Handlers\Order\DTO\OrderQuestionsDTO;
 use HiEvents\Services\Domain\Payment\Stripe\EventHandlers\PaymentIntentSucceededHandler;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -49,6 +52,7 @@ class CompleteOrderHandler
         private readonly QuestionAnswerRepositoryInterface $questionAnswersRepository,
         private readonly ProductQuantityUpdateService      $productQuantityUpdateService,
         private readonly ProductPriceRepositoryInterface   $productPriceRepository,
+        private readonly DomainEventDispatcherService      $domainEventDispatcherService,
     )
     {
     }
@@ -58,7 +62,7 @@ class CompleteOrderHandler
      */
     public function handle(string $orderShortId, CompleteOrderDTO $orderData): OrderDomainObject
     {
-        return DB::transaction(function () use ($orderData, $orderShortId) {
+        $updatedOrder = DB::transaction(function () use ($orderData, $orderShortId) {
             $orderDTO = $orderData->order;
 
             $order = $this->getOrder($orderShortId);
@@ -81,10 +85,21 @@ class CompleteOrderHandler
                 $this->productQuantityUpdateService->updateQuantitiesFromOrder($updatedOrder);
             }
 
-            OrderStatusChangedEvent::dispatch($updatedOrder);
-
             return $updatedOrder;
         });
+
+        OrderStatusChangedEvent::dispatch($updatedOrder);
+
+        if ($updatedOrder->isOrderCompleted()) {
+            $this->domainEventDispatcherService->dispatch(
+                new OrderEvent(
+                    type: DomainEventType::ORDER_CREATED,
+                    orderId: $updatedOrder->getId(),
+                )
+            );
+        }
+
+        return $updatedOrder;
     }
 
     /**

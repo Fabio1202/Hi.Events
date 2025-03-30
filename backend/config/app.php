@@ -18,6 +18,7 @@ return [
     'disable_registration' => env('APP_DISABLE_REGISTRATION', false),
     'api_rate_limit_per_minute' => env('APP_API_RATE_LIMIT_PER_MINUTE', 180),
     'stripe_connect_account_type' => env('APP_STRIPE_CONNECT_ACCOUNT_TYPE', 'express'),
+    'platform_support_email' => env('APP_PLATFORM_SUPPORT_EMAIL', 'support@hi.events'),
 
     /**
      * The number of page views to batch before updating the database
@@ -201,7 +202,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         \HiEvents\Providers\EventServiceProvider::class,
         \HiEvents\Providers\RouteServiceProvider::class,
-        \HiEvents\Providers\RepositoryServiceProvider::class,
+        \HiEvents\Providers\RepositoryServiceProvider::class
 
     ])->toArray(),
 
@@ -220,4 +221,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+
+    'is_hi_events' => env('APP_IS_HI_EVENTS', false),
 ];

@@ -39,8 +39,11 @@ import {Constants} from "../../../../constants.ts";
 
 const sendHeightToIframeWidgets = () => {
     const height = document.documentElement.scrollHeight;
+    const widgetHeight = document.querySelector('.hi-product-widget-container')?.getBoundingClientRect().height || 0;
     const urlParams = new URLSearchParams(window.location.search);
     const iframeId = urlParams.get('iframeId');
+
+    const finalHeight = Math.max(height, widgetHeight);
 
     if (!iframeId) {
         return;
@@ -48,7 +51,7 @@ const sendHeightToIframeWidgets = () => {
 
     window.parent.postMessage({
         type: 'resize',
-        height: height,
+        height: finalHeight,
         iframeId: iframeId
     }, '*');
 };
@@ -100,7 +103,10 @@ const SelectProducts = (props: SelectProductsProps) => {
             .then(() => {
                 const url = '/checkout/' + eventId + '/' + data.data.short_id + '/details';
                 if (props.widgetMode === 'embedded') {
-                    window.open(url, '_blank');
+                    window.open(
+                        url + '?session_identifier=' + data.data.session_identifier + '&utm_source=embedded_widget',
+                        '_blank'
+                    );
                     setOrderInProcessOverlayVisible(true);
                     return;
                 }
@@ -250,16 +256,16 @@ const SelectProducts = (props: SelectProductsProps) => {
     let productIndex = 0;
 
     return (
-        (<div className={'hi-product-widget-container'}
-              ref={resizeRef}
-              style={{
-                  '--widget-background-color': props.colors?.background,
-                  '--widget-primary-color': props.colors?.primary,
-                  '--widget-primary-text-color': props.colors?.primaryText,
-                  '--widget-secondary-color': props.colors?.secondary,
-                  '--widget-secondary-text-color': props.colors?.secondaryText,
-                  '--widget-padding': props?.padding,
-              } as React.CSSProperties}>
+        <div className={'hi-product-widget-container'}
+             ref={resizeRef}
+             style={{
+                 '--widget-background-color': props.colors?.background,
+                 '--widget-primary-color': props.colors?.primary,
+                 '--widget-primary-text-color': props.colors?.primaryText,
+                 '--widget-secondary-color': props.colors?.secondary,
+                 '--widget-secondary-text-color': props.colors?.secondaryText,
+                 '--widget-padding': props?.padding,
+             } as React.CSSProperties}>
             {!productAreAvailable && (
                 <div className={classNames(['hi-no-products'])}>
                     <p className={classNames(['hi-no-products-message'])}>
@@ -277,7 +283,7 @@ const SelectProducts = (props: SelectProductsProps) => {
                             </h4>
                             <Trans>
                                 If a new tab did not open, please {' '}
-                                <a href={'/checkout/' + eventId + '/' + productMutation.data?.data.short_id + '/details'}
+                                <a href={'/checkout/' + eventId + '/' + productMutation.data?.data.short_id + '/details' + '?session_identifier=' + productMutation.data?.data.session_identifier}
                                    target={'_blank'} rel={'noopener noreferrer'}>
                                     <b>{t`click here`}</b>.
                                 </a>
@@ -448,24 +454,34 @@ const SelectProducts = (props: SelectProductsProps) => {
                         </ActionIcon>
                     </div>
                 )}
+
+                {(showPromoCodeInput && !form.values.promo_code) && (
+                    <Group className={'hi-promo-code-input-wrapper'} wrap={'nowrap'} gap={'20px'}>
+                        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                        {/*@ts-ignore*/}
+                        <TextInput autoFocus classNames={{input: 'hi-promo-code-input'}} onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                                event.preventDefault();
+                                handleApplyPromoCode();
+                            }
+                        }} mb={0} ref={promoRef}/>
+                        <Button disabled={promoCodeEventRefetchMutation.isPending}
+                                className={'hi-apply-promo-code-button'} variant={'outline'}
+                                onClick={handleApplyPromoCode}>
+                            {t`Apply Promo Code`}
+                        </Button>
+                        <ActionIcon
+                            className={'hi-close-promo-code-input-button'}
+                            variant="transparent"
+                            aria-label={t`close`}
+                            title={t`Close`}
+                            onClick={() => setShowPromoCodeInput(false)}
+                        >
+                            <IconX stroke={1.5} size={20}/>
+                        </ActionIcon>
+                    </Group>
+                )}
             </div>
-            {(showPromoCodeInput && !form.values.promo_code) && (
-                <Group className={'hi-promo-code-input-wrapper'} wrap={'nowrap'} gap={'20px'}>
-                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                    {/*@ts-ignore*/}
-                    <TextInput autoFocus classNames={{input: 'hi-promo-code-input'}} onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault();
-                            handleApplyPromoCode();
-                        }
-                    }} mb={0} ref={promoRef}/>
-                    <Button disabled={promoCodeEventRefetchMutation.isPending}
-                            className={'hi-apply-promo-code-button'} variant={'outline'}
-                            onClick={handleApplyPromoCode}>
-                        {t`Apply Promo Code`}
-                    </Button>
-                </Group>
-            )}
             {
                 /**
                  * (c) Hi.Events Ltd 2025
@@ -484,7 +500,7 @@ const SelectProducts = (props: SelectProductsProps) => {
             <PoweredByFooter style={{
                 'color': props.colors?.primaryText || '#000',
             }}/>
-        </div>)
+        </div>
     );
 }
 

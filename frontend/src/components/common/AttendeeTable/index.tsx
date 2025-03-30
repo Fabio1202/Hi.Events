@@ -28,7 +28,7 @@ interface AttendeeTableProps {
 export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) => {
     const {eventId} = useParams();
     const [isMessageModalOpen, messageModal] = useDisclosure(false);
-    const [isViewModalOpem, viewModalOpen] = useDisclosure(false);
+    const [isViewModalOpen, viewModalOpen] = useDisclosure(false);
     const [selectedAttendee, setSelectedAttendee] = useState<Attendee>();
     const {data: event} = useGetEvent(eventId);
     const modifyMutation = useModifyAttendee();
@@ -107,9 +107,9 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                         <MantineTable.Th></MantineTable.Th>
                         <MantineTable.Th>{t`Name`}</MantineTable.Th>
                         <MantineTable.Th>{t`Email`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Order`}</MantineTable.Th>
+                        <MantineTable.Th miw={140}>{t`Order`}</MantineTable.Th>
                         <MantineTable.Th>{t`Ticket`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Status`}</MantineTable.Th>
+                        <MantineTable.Th miw={120}>{t`Status`}</MantineTable.Th>
                         <MantineTable.Th></MantineTable.Th>
                     </MantineTable.Tr>
                 </TableHead>
@@ -197,9 +197,9 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                 onClose={messageModal.close}
                 orderId={selectedAttendee.order_id}
                 attendeeId={selectedAttendee.id}
-                messageType={MessageType.Attendee}
+                messageType={MessageType.IndividualAttendees}
             />}
-            {(selectedAttendee?.id && isViewModalOpem) && <ManageAttendeeModal
+            {(selectedAttendee?.id && isViewModalOpen) && <ManageAttendeeModal
                 attendeeId={selectedAttendee.id}
                 onClose={viewModalOpen.close}
             />}

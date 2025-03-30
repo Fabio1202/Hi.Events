@@ -26,6 +26,8 @@ class EventDomainObject extends Generated\EventDomainObjectAbstract implements I
 
     private ?Collection $checkInLists = null;
 
+    private ?Collection $webhooks = null;
+
     private ?Collection $capacityAssignments = null;
 
     private ?EventSettingDomainObject $settings = null;
@@ -33,6 +35,8 @@ class EventDomainObject extends Generated\EventDomainObjectAbstract implements I
     private ?OrganizerDomainObject $organizer = null;
 
     private ?EventStatisticDomainObject $eventStatistics = null;
+
+    private ?AccountDomainObject $account = null;
 
     public static function getAllowedFilterFields(): array
     {
@@ -140,6 +144,17 @@ class EventDomainObject extends Generated\EventDomainObjectAbstract implements I
     {
         $this->organizer = $organizer;
 
+        return $this;
+    }
+
+    public function getAccount(): ?AccountDomainObject
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?AccountDomainObject $account): self
+    {
+        $this->account = $account;
         return $this;
     }
 
@@ -271,5 +286,16 @@ class EventDomainObject extends Generated\EventDomainObjectAbstract implements I
     public function getProductCategories(): ?Collection
     {
         return $this->productCategories;
+    }
+
+    public function getWebhooks(): ?Collection
+    {
+        return $this->webhooks;
+    }
+
+    public function setWebhooks(?Collection $webhooks): EventDomainObject
+    {
+        $this->webhooks = $webhooks;
+        return $this;
     }
 }

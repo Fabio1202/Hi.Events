@@ -2,27 +2,48 @@
 
 namespace HiEvents\Services\Domain\Order;
 
+use HiEvents\DomainObjects\AccountConfigurationDomainObject;
+use HiEvents\DomainObjects\AccountDomainObject;
+use HiEvents\DomainObjects\AttendeeDomainObject;
+use HiEvents\DomainObjects\Enums\PaymentProviders;
+use HiEvents\DomainObjects\EventDomainObject;
+use HiEvents\DomainObjects\EventSettingDomainObject;
 use HiEvents\DomainObjects\Generated\OrderDomainObjectAbstract;
+use HiEvents\DomainObjects\InvoiceDomainObject;
 use HiEvents\DomainObjects\OrderDomainObject;
+use HiEvents\DomainObjects\OrderItemDomainObject;
+use HiEvents\DomainObjects\OrganizerDomainObject;
 use HiEvents\DomainObjects\Status\AttendeeStatus;
 use HiEvents\DomainObjects\Status\InvoiceStatus;
+use HiEvents\DomainObjects\Status\OrderApplicationFeeStatus;
 use HiEvents\DomainObjects\Status\OrderPaymentStatus;
 use HiEvents\DomainObjects\Status\OrderStatus;
 use HiEvents\Events\OrderStatusChangedEvent;
 use HiEvents\Exceptions\ResourceConflictException;
+use HiEvents\Repository\Eloquent\Value\Relationship;
 use HiEvents\Repository\Interfaces\AttendeeRepositoryInterface;
+use HiEvents\Repository\Interfaces\EventRepositoryInterface;
 use HiEvents\Repository\Interfaces\InvoiceRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
+use HiEvents\Services\Domain\Mail\SendOrderDetailsService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Database\DatabaseManager;
 use Throwable;
 
 class MarkOrderAsPaidService
 {
     public function __construct(
-        private readonly OrderRepositoryInterface    $orderRepository,
-        private readonly DatabaseManager             $databaseManager,
-        private readonly InvoiceRepositoryInterface  $invoiceRepository,
-        private readonly AttendeeRepositoryInterface $attendeeRepository,
+        private readonly OrderRepositoryInterface              $orderRepository,
+        private readonly DatabaseManager                       $databaseManager,
+        private readonly InvoiceRepositoryInterface            $invoiceRepository,
+        private readonly AttendeeRepositoryInterface           $attendeeRepository,
+        private readonly DomainEventDispatcherService          $domainEventDispatcherService,
+        private readonly OrderApplicationFeeCalculationService $orderApplicationFeeCalculationService,
+        private readonly EventRepositoryInterface              $eventRepository,
+        private readonly OrderApplicationFeeService            $orderApplicationFeeService,
+        private readonly SendOrderDetailsService               $sendOrderDetailsService,
     )
     {
     }
@@ -37,10 +58,19 @@ class MarkOrderAsPaidService
     {
         return $this->databaseManager->transaction(function () use ($orderId, $eventId) {
             /** @var OrderDomainObject $order */
-            $order = $this->orderRepository->findFirstWhere([
-                OrderDomainObjectAbstract::ID => $orderId,
-                OrderDomainObjectAbstract::EVENT_ID => $eventId,
-            ]);
+            $order = $this->orderRepository
+                ->loadRelation(OrderItemDomainObject::class)
+                ->loadRelation(AttendeeDomainObject::class)
+                ->loadRelation(InvoiceDomainObject::class)
+                ->findFirstWhere([
+                    OrderDomainObjectAbstract::ID => $orderId,
+                    OrderDomainObjectAbstract::EVENT_ID => $eventId,
+                ]);
+
+            $event = $this->eventRepository
+                ->loadRelation(new Relationship(OrganizerDomainObject::class, name: 'organizer'))
+                ->loadRelation(new Relationship(EventSettingDomainObject::class))
+                ->findById($order->getEventId());
 
             if ($order->getStatus() !== OrderStatus::AWAITING_OFFLINE_PAYMENT->name) {
                 throw new ResourceConflictException(__('Order is not awaiting offline payment'));
@@ -58,6 +88,23 @@ class MarkOrderAsPaidService
                 order: $updatedOrder,
                 sendEmails: false
             ));
+
+            $this->domainEventDispatcherService->dispatch(
+                new OrderEvent(
+                    type: DomainEventType::ORDER_MARKED_AS_PAID,
+                    orderId: $orderId,
+                ),
+            );
+
+            $this->storeApplicationFeePayment($updatedOrder);
+
+            $this->sendOrderDetailsService->sendCustomerOrderSummary(
+                order: $updatedOrder,
+                event: $event,
+                organizer: $event->getOrganizer(),
+                eventSettings: $event->getEventSettings(),
+                invoice: $order->getLatestInvoice(),
+            );
 
             return $updatedOrder;
         });
@@ -95,4 +142,34 @@ class MarkOrderAsPaidService
         );
     }
 
+    private function storeApplicationFeePayment(OrderDomainObject $updatedOrder): void
+    {
+        /** @var EventDomainObject $event */
+        $event = $this->eventRepository
+            ->loadRelation(new Relationship(
+                domainObject: AccountDomainObject::class,
+                nested: [
+                    new Relationship(
+                        domainObject: AccountConfigurationDomainObject::class,
+                        name: 'configuration',
+                    ),
+                ],
+                name: 'account'
+            ))
+            ->findById($updatedOrder->getEventId());
+
+        /** @var AccountConfigurationDomainObject $config */
+        $config = $event->getAccount()->getConfiguration();
+
+        $this->orderApplicationFeeService->createOrderApplicationFee(
+            orderId: $updatedOrder->getId(),
+            applicationFeeAmount: $this->orderApplicationFeeCalculationService->calculateApplicationFee(
+                $config,
+                $updatedOrder->getTotalGross(),
+                $event->getCurrency(),
+            )->toFloat(),
+            orderApplicationFeeStatus: OrderApplicationFeeStatus::AWAITING_PAYMENT,
+            paymentMethod: PaymentProviders::OFFLINE,
+        );
+    }
 }

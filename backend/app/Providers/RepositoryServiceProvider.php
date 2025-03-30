@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HiEvents\Providers;
 
+use HiEvents\Repository\Eloquent\AccountConfigurationRepository;
 use HiEvents\Repository\Eloquent\AccountRepository;
 use HiEvents\Repository\Eloquent\AccountUserRepository;
 use HiEvents\Repository\Eloquent\AttendeeCheckInRepository;
@@ -17,22 +18,28 @@ use HiEvents\Repository\Eloquent\EventStatisticRepository;
 use HiEvents\Repository\Eloquent\ImageRepository;
 use HiEvents\Repository\Eloquent\InvoiceRepository;
 use HiEvents\Repository\Eloquent\MessageRepository;
+use HiEvents\Repository\Eloquent\OrderApplicationFeeRepository;
 use HiEvents\Repository\Eloquent\OrderItemRepository;
 use HiEvents\Repository\Eloquent\OrderRefundRepository;
 use HiEvents\Repository\Eloquent\OrderRepository;
 use HiEvents\Repository\Eloquent\OrganizerRepository;
+use HiEvents\Repository\Eloquent\OutgoingMessageRepository;
 use HiEvents\Repository\Eloquent\PasswordResetRepository;
 use HiEvents\Repository\Eloquent\PasswordResetTokenRepository;
 use HiEvents\Repository\Eloquent\ProductCategoryRepository;
 use HiEvents\Repository\Eloquent\ProductPriceRepository;
 use HiEvents\Repository\Eloquent\ProductRepository;
 use HiEvents\Repository\Eloquent\PromoCodeRepository;
+use HiEvents\Repository\Eloquent\QuestionAndAnswerViewRepository;
 use HiEvents\Repository\Eloquent\QuestionAnswerRepository;
 use HiEvents\Repository\Eloquent\QuestionRepository;
 use HiEvents\Repository\Eloquent\StripeCustomerRepository;
 use HiEvents\Repository\Eloquent\StripePaymentsRepository;
 use HiEvents\Repository\Eloquent\TaxAndFeeRepository;
 use HiEvents\Repository\Eloquent\UserRepository;
+use HiEvents\Repository\Eloquent\WebhookLogRepository;
+use HiEvents\Repository\Eloquent\WebhookRepository;
+use HiEvents\Repository\Interfaces\AccountConfigurationRepositoryInterface;
 use HiEvents\Repository\Interfaces\AccountRepositoryInterface;
 use HiEvents\Repository\Interfaces\AccountUserRepositoryInterface;
 use HiEvents\Repository\Interfaces\AttendeeCheckInRepositoryInterface;
@@ -46,22 +53,27 @@ use HiEvents\Repository\Interfaces\EventStatisticRepositoryInterface;
 use HiEvents\Repository\Interfaces\ImageRepositoryInterface;
 use HiEvents\Repository\Interfaces\InvoiceRepositoryInterface;
 use HiEvents\Repository\Interfaces\MessageRepositoryInterface;
+use HiEvents\Repository\Interfaces\OrderApplicationFeeRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderItemRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRefundRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
 use HiEvents\Repository\Interfaces\OrganizerRepositoryInterface;
+use HiEvents\Repository\Interfaces\OutgoingMessageRepositoryInterface;
 use HiEvents\Repository\Interfaces\PasswordResetRepositoryInterface;
 use HiEvents\Repository\Interfaces\PasswordResetTokenRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductCategoryRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductPriceRepositoryInterface;
 use HiEvents\Repository\Interfaces\ProductRepositoryInterface;
 use HiEvents\Repository\Interfaces\PromoCodeRepositoryInterface;
+use HiEvents\Repository\Interfaces\QuestionAndAnswerViewRepositoryInterface;
 use HiEvents\Repository\Interfaces\QuestionAnswerRepositoryInterface;
 use HiEvents\Repository\Interfaces\QuestionRepositoryInterface;
 use HiEvents\Repository\Interfaces\StripeCustomerRepositoryInterface;
 use HiEvents\Repository\Interfaces\StripePaymentsRepositoryInterface;
 use HiEvents\Repository\Interfaces\TaxAndFeeRepositoryInterface;
 use HiEvents\Repository\Interfaces\UserRepositoryInterface;
+use HiEvents\Repository\Interfaces\WebhookLogRepositoryInterface;
+use HiEvents\Repository\Interfaces\WebhookRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -99,6 +111,12 @@ class RepositoryServiceProvider extends ServiceProvider
         ProductCategoryRepositoryInterface::class => ProductCategoryRepository::class,
         InvoiceRepositoryInterface::class => InvoiceRepository::class,
         OrderRefundRepositoryInterface::class => OrderRefundRepository::class,
+        WebhookRepositoryInterface::class => WebhookRepository::class,
+        WebhookLogRepositoryInterface::class => WebhookLogRepository::class,
+        OrderApplicationFeeRepositoryInterface::class => OrderApplicationFeeRepository::class,
+        AccountConfigurationRepositoryInterface::class => AccountConfigurationRepository::class,
+        QuestionAndAnswerViewRepositoryInterface::class => QuestionAndAnswerViewRepository::class,
+        OutgoingMessageRepositoryInterface::class => OutgoingMessageRepository::class,
     ];
 
     public function register(): void

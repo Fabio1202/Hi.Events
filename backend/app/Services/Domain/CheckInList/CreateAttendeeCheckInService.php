@@ -4,6 +4,7 @@ namespace HiEvents\Services\Domain\CheckInList;
 
 use Exception;
 use HiEvents\DataTransferObjects\ErrorBagDTO;
+use HiEvents\DomainObjects\AttendeeCheckInDomainObject;
 use HiEvents\DomainObjects\AttendeeDomainObject;
 use HiEvents\DomainObjects\CheckInListDomainObject;
 use HiEvents\DomainObjects\Enums\AttendeeCheckInActionType;
@@ -13,10 +14,8 @@ use HiEvents\DomainObjects\Status\AttendeeStatus;
 use HiEvents\Exceptions\CannotCheckInException;
 use HiEvents\Helper\DateHelper;
 use HiEvents\Helper\IdHelper;
-use HiEvents\Repository\Eloquent\AttendeeRepository;
 use HiEvents\Repository\Interfaces\AttendeeCheckInRepositoryInterface;
 use HiEvents\Repository\Interfaces\EventSettingsRepositoryInterface;
-use HiEvents\Repository\Interfaces\OrderRepositoryInterface;
 use HiEvents\Services\Application\Handlers\CheckInList\Public\DTO\AttendeeAndActionDTO;
 use HiEvents\Services\Domain\CheckInList\DTO\CheckInResultDTO;
 use HiEvents\Services\Domain\CheckInList\DTO\CreateAttendeeCheckInsResponseDTO;
@@ -31,8 +30,6 @@ class CreateAttendeeCheckInService
         private readonly AttendeeCheckInRepositoryInterface $attendeeCheckInRepository,
         private readonly CheckInListDataService             $checkInListDataService,
         private readonly EventSettingsRepositoryInterface   $eventSettingsRepository,
-        private readonly OrderRepositoryInterface           $orderRepository,
-        private readonly AttendeeRepository                 $attendeeRepository,
         private readonly ConnectionInterface                $db,
         private readonly MarkOrderAsPaidService             $markOrderAsPaidService,
     )
@@ -254,9 +251,10 @@ class CreateAttendeeCheckInService
         AttendeeDomainObject    $attendee,
         CheckInListDomainObject $checkInList,
         string                  $checkInUserIpAddress
-    ): object
+    ): AttendeeCheckInDomainObject
     {
         return $this->attendeeCheckInRepository->create([
+            AttendeeCheckInDomainObjectAbstract::ORDER_ID => $attendee->getOrderId(),
             AttendeeCheckInDomainObjectAbstract::ATTENDEE_ID => $attendee->getId(),
             AttendeeCheckInDomainObjectAbstract::CHECK_IN_LIST_ID => $checkInList->getId(),
             AttendeeCheckInDomainObjectAbstract::IP_ADDRESS => $checkInUserIpAddress,

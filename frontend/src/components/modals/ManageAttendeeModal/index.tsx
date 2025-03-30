@@ -5,7 +5,6 @@ import {useGetOrder} from "../../../queries/useGetOrder.ts";
 import {useUpdateAttendee} from "../../../mutations/useUpdateAttendee.ts";
 import {useFormErrorResponseHandler} from "../../../hooks/useFormErrorResponseHandler.tsx";
 import {useForm} from "@mantine/form";
-import {Modal} from "../../common/Modal";
 import {Accordion} from "../../common/Accordion";
 import {Button} from "../../common/Button";
 import {Avatar, Box, Group, Stack, Tabs, Text, Textarea, TextInput} from "@mantine/core";
@@ -13,7 +12,7 @@ import {IconEdit, IconNotebook, IconQuestionMark, IconReceipt, IconTicket, IconU
 import {LoadingMask} from "../../common/LoadingMask";
 import {AttendeeDetails} from "../../common/AttendeeDetails";
 import {OrderDetails} from "../../common/OrderDetails";
-import {QuestionAndAnswerList} from "../../common/QuestionAndAnswerList";
+import {QuestionAndAnswerList, QuestionList} from "../../common/QuestionAndAnswerList";
 import {AttendeeTicket} from "../../common/AttendeeTicket";
 import {getInitials} from "../../../utilites/helpers.ts";
 import {t} from "@lingui/macro";
@@ -26,6 +25,7 @@ import {InputGroup} from "../../common/InputGroup";
 import {InputLabelWithHelp} from "../../common/InputLabelWithHelp";
 import {EditAttendeeRequest} from "../../../api/attendee.client.ts";
 import {AttendeeStatusBadge} from "../../common/AttendeeStatusBadge";
+import {SideDrawer} from "../../common/SideDrawer";
 
 interface ManageAttendeeModalProps extends GenericModalProps {
     onClose: () => void;
@@ -34,7 +34,7 @@ interface ManageAttendeeModalProps extends GenericModalProps {
 
 export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalProps) => {
     const {eventId} = useParams();
-    const {data: attendee} = useGetAttendee(eventId, attendeeId);
+    const {data: attendee, refetch: refetchAttendee} = useGetAttendee(eventId, attendeeId);
     const {data: order} = useGetOrder(eventId, attendee?.order_id);
     const {data: event} = useGetEvent(eventId);
     const errorHandler = useFormErrorResponseHandler();
@@ -184,7 +184,10 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
                     title: t`Questions & Answers`,
                     count: hasQuestions ? attendee?.question_answers?.length : undefined,
                     content: hasQuestions ? (
-                        <QuestionAndAnswerList questionAnswers={attendee.question_answers as QuestionAnswer[]}/>
+                        <QuestionList
+                            onEditAnswer={refetchAttendee}
+                            questions={attendee.question_answers as QuestionAnswer[]}
+                        />
                     ) : (
                         <Text c="dimmed" ta="center" py="xl">
                             {t`No questions answered by this attendee.`}
@@ -197,7 +200,7 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
     );
 
     return (
-        <Modal opened onClose={onClose} size="lg" padding="md">
+        <SideDrawer opened onClose={onClose} size="lg" padding="md">
             <Stack className={classes.container}>
                 <div className={classes.header}>
                     <Group justify="center" align="center">
@@ -233,6 +236,6 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
                     </Box>
                 </Tabs>
             </Stack>
-        </Modal>
+        </SideDrawer>
     );
 };

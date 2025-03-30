@@ -3,7 +3,6 @@ import {Anchor, Badge, Button, Group, Menu, Table as MantineTable, Tooltip} from
 import {Event, IdParam, Invoice, MessageType, Order} from "../../../types.ts";
 import {
     IconBasketCog,
-    IconCash,
     IconCheck,
     IconDotsVertical,
     IconInfoCircle,
@@ -36,6 +35,7 @@ import {useMarkOrderAsPaid} from "../../../mutations/useMarkOrderAsPaid.ts";
 import {orderClient} from "../../../api/order.client.ts";
 import {downloadBinary} from "../../../utilites/download.ts";
 import {withLoadingNotification} from "../../../utilites/withLoadingNotification.tsx";
+import {showError, showSuccess} from "../../../utilites/notifications.tsx";
 
 interface OrdersTableProps {
     event: Event,
@@ -76,18 +76,8 @@ export const OrdersTable = ({orders, event}: OrdersTableProps) => {
 
     const handleMarkAsPaid = (eventId: IdParam, orderId: IdParam) => {
         markAsPaidMutation.mutate({eventId, orderId}, {
-            onSuccess: () => {
-                notifications.show({
-                    message: t`Order marked as paid`,
-                    icon: <IconCash/>
-                })
-            },
-            onError: () => {
-                notifications.show({
-                    message: t`There was an error marking the order as paid`,
-                    icon: <IconCheck/>
-                })
-            }
+            onSuccess: () => showSuccess(t`Order marked as paid`),
+            onError: () => showError(t`There was an error marking the order as paid`)
         });
     }
 
@@ -96,13 +86,15 @@ export const OrdersTable = ({orders, event}: OrdersTableProps) => {
             onSuccess: () => {
                 notifications.show({
                     message: t`Your message has been sent`,
-                    icon: <IconCheck/>
+                    icon: <IconCheck/>,
+                    position: 'top-center',
                 })
             },
             onError: () => {
                 notifications.show({
                     message: t`There was an error sending your message`,
-                    icon: <IconCheck/>
+                    icon: <IconCheck/>,
+                    position: 'top-center',
                 })
             }
         });
@@ -209,12 +201,12 @@ export const OrdersTable = ({orders, event}: OrdersTableProps) => {
             <Table>
                 <TableHead>
                     <MantineTable.Tr>
-                        <MantineTable.Th>{t`Order #`}</MantineTable.Th>
+                        <MantineTable.Th miw={120}>{t`Reference`}</MantineTable.Th>
                         <MantineTable.Th>{t`Customer`}</MantineTable.Th>
                         <MantineTable.Th>{t`Attendees`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Amount`}</MantineTable.Th>
+                        <MantineTable.Th miw={140}>{t`Amount`}</MantineTable.Th>
                         <MantineTable.Th>{t`Created`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Status`}</MantineTable.Th>
+                        <MantineTable.Th miw={120}>{t`Status`}</MantineTable.Th>
                         <MantineTable.Th></MantineTable.Th>
                     </MantineTable.Tr>
                 </TableHead>
@@ -317,7 +309,7 @@ export const OrdersTable = ({orders, event}: OrdersTableProps) => {
                     {isMessageModalOpen && <SendMessageModal
                         onClose={messageModal.close}
                         orderId={orderId}
-                        messageType={MessageType.Order}
+                        messageType={MessageType.OrderOwner}
                     />}
                 </>
             )}

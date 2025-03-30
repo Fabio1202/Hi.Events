@@ -30,6 +30,9 @@ use HiEvents\Services\Application\Handlers\Attendee\DTO\CreateAttendeeTaxAndFeeD
 use HiEvents\Services\Domain\Order\OrderManagementService;
 use HiEvents\Services\Domain\Product\ProductQuantityUpdateService;
 use HiEvents\Services\Domain\Tax\TaxAndFeeRollupService;
+use HiEvents\Services\Infrastructure\DomainEvents\DomainEventDispatcherService;
+use HiEvents\Services\Infrastructure\DomainEvents\Enums\DomainEventType;
+use HiEvents\Services\Infrastructure\DomainEvents\Events\OrderEvent;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Collection;
 use RuntimeException;
@@ -47,6 +50,7 @@ class CreateAttendeeHandler
         private readonly TaxAndFeeRepositoryInterface $taxAndFeeRepository,
         private readonly TaxAndFeeRollupService       $taxAndFeeRollupService,
         private readonly OrderManagementService       $orderManagementService,
+        private readonly DomainEventDispatcherService $domainEventDispatcherService,
     )
     {
     }
@@ -99,6 +103,8 @@ class CreateAttendeeHandler
             $this->orderManagementService->updateOrderTotals($order, collect([$orderItem]));
 
             $this->fireEventsAndUpdateQuantities($attendeeDTO, $order);
+
+            $this->queueWebhooks($order);
 
             return $attendee;
         });
@@ -240,5 +246,12 @@ class CreateAttendeeHandler
             order: $order,
             sendEmails: $attendeeDTO->send_confirmation_email,
         ));
+    }
+
+    private function queueWebhooks(OrderDomainObject $order): void
+    {
+        $this->domainEventDispatcherService->dispatch(
+            new OrderEvent(DomainEventType::ORDER_CREATED, $order->getId())
+        );
     }
 }
