@@ -364,7 +364,7 @@ export const CollectInformation = () => {
 
                 {orderItems?.map(orderItem => {
                     const product = products?.find(product => product!.id === orderItem.product_id);
-                    const productRequiresDetails = product?.product_type === 'TICKET';
+                    const productRequiresDetails = product?.product_type === 'TICKET' && product?.personalized_product == true;
                     const productHasQuestions = productQuestions?.some(question => question.product_ids?.includes(orderItem.product_id));
 
                     if (!product) {

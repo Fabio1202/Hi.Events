@@ -222,4 +222,9 @@ class ProductDomainObject extends Generated\ProductDomainObjectAbstract implemen
     {
         return $this->offSaleReason;
     }
+
+    public function getPersonalizedProduct(): bool
+    {
+        return $this->personalized_product;
+    }
 }

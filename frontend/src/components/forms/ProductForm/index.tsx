@@ -390,6 +390,8 @@ export const ProductForm = ({form, product}: ProductFormProps) => {
                         <TextInput type={'datetime-local'} {...form.getInputProps('sale_end_date')}
                                    label={t`Sale End Date`}/>
                     </InputGroup>
+                    <Switch mt={15} {...form.getInputProps('personalized_product', {type: 'checkbox'})}
+                            label={t`Should this ticket be personalized?`}/>
                     <h3>
                         {t`Visibility`}
                     </h3>
