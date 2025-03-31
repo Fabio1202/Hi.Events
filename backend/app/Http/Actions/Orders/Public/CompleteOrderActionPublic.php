@@ -23,6 +23,13 @@ class CompleteOrderActionPublic extends BaseAction
     public function __invoke(CompleteOrderRequest $request, int $eventId, string $orderShortId): JsonResponse
     {
         try {
+            $products = $request->input('products');
+            foreach ($products as &$p){
+                $p["first_name"] = ($p["first_name"] == null) ? $request->validated('order.first_name') : $p["first_name"];
+                $p["last_name"] = ($p["last_name"] == null) ? $request->validated('order.last_name') : $p["last_name"];
+                $p["email"] = ($p["email"] == null) ? $request->validated('order.email') : $p["email"];
+            }
+
             $order = $this->orderService->handle($orderShortId, CompleteOrderDTO::fromArray([
                 'order' => CompleteOrderOrderDTO::fromArray([
                     'first_name' => $request->validated('order.first_name'),
@@ -33,7 +40,7 @@ class CompleteOrderActionPublic extends BaseAction
                         ? $request->input('order.questions')
                         : null,
                 ]),
-                'products' => $request->input('products'),
+                'products' => $products,
             ]));
         } catch (ResourceConflictException $e) {
             return $this->errorResponse($e->getMessage(), Response::HTTP_CONFLICT);

@@ -47,7 +47,7 @@ class ProductQuestionRule extends BaseQuestionRule
                 continue;
             }
 
-            if ($productDomainObject->getProductType() === ProductType::TICKET->name) {
+            if ($productDomainObject->getProductType() === ProductType::TICKET->name && $productDomainObject->getPersonalizedProduct()) {
                 $validationMessages = [
                     ...$validationMessages,
                     ...$this->validateBasicTicketFields($productRequestData, $productIndex),

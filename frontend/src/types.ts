@@ -374,6 +374,7 @@ export interface Product {
     taxes_and_fees?: TaxAndFee[];
     is_hidden?: boolean;
     product_category_id?: IdParam;
+    personalized_product?: boolean;
 }
 
 export interface ProductCategory {
