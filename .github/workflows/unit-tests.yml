@@ -2,7 +2,7 @@ name: Run Unit Tests
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, main-fs-events]
     paths:
       - 'backend/**'
   pull_request:
