@@ -38,6 +38,7 @@ export const EditProductModal = ({onClose, productId}: GenericModalProps & { pro
             prices: [],
             product_type: ProductType.Ticket,
             product_category_id: undefined,
+            personalized_product: undefined,
         },
     });
 
@@ -67,6 +68,7 @@ export const EditProductModal = ({onClose, productId}: GenericModalProps & { pro
             is_hidden: product.is_hidden,
             product_type: product.product_type,
             product_category_id: String(product.product_category_id),
+            personalized_product: product.personalized_product,
             prices: product.prices?.map(p => ({
                 price: p.price ?? 0,
                 label: p.label,
@@ -80,6 +82,7 @@ export const EditProductModal = ({onClose, productId}: GenericModalProps & { pro
     }, [product, event]);
 
     const handleEditProduct = (product: Product) => {
+        console.log(product)
         mutation.mutate({
             productData: product,
             eventId: eventId,

@@ -46,6 +46,7 @@ export const DuplicateProductModal = ({onClose, originalProductId}: DuplicatePro
                 sale_start_date: undefined,
                 initial_quantity_available: undefined,
             }],
+            personalized_product: true,
         },
     });
 
@@ -63,6 +64,7 @@ export const DuplicateProductModal = ({onClose, originalProductId}: DuplicatePro
             sale_end_date: originalProduct.sale_end_date,
             start_collapsed: originalProduct.start_collapsed,
             hide_before_sale_start_date: originalProduct.hide_before_sale_start_date,
+            personalized_product: originalProduct.personalized_product,
             hide_after_sale_end_date: originalProduct.hide_after_sale_end_date,
             show_quantity_remaining: originalProduct.show_quantity_remaining,
             hide_when_sold_out: originalProduct.hide_when_sold_out,

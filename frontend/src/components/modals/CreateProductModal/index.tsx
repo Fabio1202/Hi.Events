@@ -45,6 +45,7 @@ export const CreateProductModal = ({onClose, selectedCategoryId = undefined}: Cr
                 sale_start_date: undefined,
                 initial_quantity_available: undefined,
             }],
+            personalized_product: true,
         },
     });
 

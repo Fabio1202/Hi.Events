@@ -41,6 +41,7 @@ class UpsertProductRequest extends BaseRequest
             'product_type' => ['required', Rule::in(ProductType::valuesArray())],
             'tax_and_fee_ids' => 'array',
             'product_category_id' => ['required', 'integer'],
+            'personalized_product' => 'boolean',
         ];
     }
 

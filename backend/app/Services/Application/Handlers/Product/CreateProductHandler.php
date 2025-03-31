@@ -62,7 +62,8 @@ class CreateProductHandler
                 ->setProductPrices($productPrices)
                 ->setEventId($productsData->event_id)
                 ->setProductType($productsData->product_type->name)
-                ->setProductCategoryId($category->getId()),
+                ->setProductCategoryId($category->getId())
+                ->setPersonalizedProduct($productsData->personalized_product),
             accountId: $productsData->account_id,
             taxAndFeeIds: $productsData->tax_and_fee_ids,
         );
