@@ -32,7 +32,6 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
     final public const DELETED_AT = 'deleted_at';
     final public const TYPE = 'type';
     final public const IS_HIDDEN = 'is_hidden';
-    final public const PRODUCT_TYPE = 'product_type';
     final public const START_COLLAPSED = 'start_collapsed';
     final public const PRODUCT_TYPE = 'product_type';
     final public const PERSONALIZED_PRODUCT = 'personalized_product';
@@ -61,7 +60,6 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
     protected ?bool $is_hidden = false;
     protected string $product_type = 'TICKET';
     protected bool $start_collapsed = false;
-    protected string $product_type = 'TICKET';
     protected bool $personalized_product = true;
 
     public function toArray(): array
@@ -91,7 +89,6 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
                     'is_hidden' => $this->is_hidden ?? null,
                     'product_type' => $this->product_type ?? null,
                     'start_collapsed' => $this->start_collapsed ?? null,
-                    'product_type' => $this->product_type ?? null,
                     'personalized_product' => $this->personalized_product ?? null,
                 ];
     }
@@ -358,17 +355,6 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
     public function getStartCollapsed(): bool
     {
         return $this->start_collapsed;
-    }
-
-    public function setProductType(string $product_type): self
-    {
-        $this->product_type = $product_type;
-        return $this;
-    }
-
-    public function getProductType(): string
-    {
-        return $this->product_type;
     }
 
     public function setPersonalizedProduct(bool $personalized_product): self
