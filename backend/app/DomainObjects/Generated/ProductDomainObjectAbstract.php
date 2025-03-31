@@ -32,8 +32,9 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
     final public const DELETED_AT = 'deleted_at';
     final public const TYPE = 'type';
     final public const IS_HIDDEN = 'is_hidden';
-    final public const PRODUCT_TYPE = 'product_type';
     final public const START_COLLAPSED = 'start_collapsed';
+    final public const PRODUCT_TYPE = 'product_type';
+    final public const PERSONALIZED_PRODUCT = 'personalized_product';
 
     protected int $id;
     protected int $event_id;
@@ -57,8 +58,9 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
     protected ?string $deleted_at = null;
     protected string $type = 'PAID';
     protected ?bool $is_hidden = false;
-    protected string $product_type = 'TICKET';
     protected bool $start_collapsed = false;
+    protected string $product_type = 'TICKET';
+    protected bool $personalized_product = true;
 
     public function toArray(): array
     {
@@ -85,8 +87,9 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
                     'deleted_at' => $this->deleted_at ?? null,
                     'type' => $this->type ?? null,
                     'is_hidden' => $this->is_hidden ?? null,
-                    'product_type' => $this->product_type ?? null,
                     'start_collapsed' => $this->start_collapsed ?? null,
+                    'product_type' => $this->product_type ?? null,
+                    'personalized_product' => $this->personalized_product ?? null,
                 ];
     }
 
@@ -332,6 +335,17 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
         return $this->is_hidden;
     }
 
+    public function setStartCollapsed(bool $start_collapsed): self
+    {
+        $this->start_collapsed = $start_collapsed;
+        return $this;
+    }
+
+    public function getStartCollapsed(): bool
+    {
+        return $this->start_collapsed;
+    }
+
     public function setProductType(string $product_type): self
     {
         $this->product_type = $product_type;
@@ -343,14 +357,14 @@ abstract class ProductDomainObjectAbstract extends \HiEvents\DomainObjects\Abstr
         return $this->product_type;
     }
 
-    public function setStartCollapsed(bool $start_collapsed): self
+    public function setPersonalizedProduct(bool $personalized_product): self
     {
-        $this->start_collapsed = $start_collapsed;
+        $this->personalized_product = $personalized_product;
         return $this;
     }
 
-    public function getStartCollapsed(): bool
+    public function getPersonalizedProduct(): bool
     {
-        return $this->start_collapsed;
+        return $this->personalized_product;
     }
 }

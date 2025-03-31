@@ -50,6 +50,7 @@ class ProductResourcePublic extends JsonResource
                 'is_sold_out' => $this->isSoldOut(),
             ]),
             'product_category_id' => $this->getProductCategoryId(),
+            'personalized_product' => $this->getPersonalizedProduct(),
         ];
     }
 }
