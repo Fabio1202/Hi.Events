@@ -50,7 +50,7 @@ msgstr "{0} <0>sorti</0> avec succès"
 msgid "{0} Active Webhooks"
 msgstr "{0} webhooks actifs"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:352
+#: src/components/routes/product-widget/SelectProducts/index.tsx:355
 msgid "{0} available"
 msgstr "{0} disponible"
 
@@ -553,7 +553,7 @@ msgstr "Un événement est le rassemblement ou l'occasion que vous organisez. Vo
 msgid "An organizer is the company or person who is hosting the event"
 msgstr "Un organisateur est l'entreprise ou la personne qui organise l'événement"
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:106
+#: src/components/forms/StripeCheckoutForm/index.tsx:40
 msgid "An unexpected error occurred."
 msgstr "Une erreur inattendue est apparue."
 
@@ -577,7 +577,7 @@ msgstr "Toute question des détenteurs de produits sera envoyée à cette adress
 msgid "Appearance"
 msgstr "Apparence"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:440
+#: src/components/routes/product-widget/SelectProducts/index.tsx:443
 msgid "applied"
 msgstr "appliqué"
 
@@ -601,7 +601,7 @@ msgstr "S'applique à 1 produit"
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:468
+#: src/components/routes/product-widget/SelectProducts/index.tsx:471
 msgid "Apply Promo Code"
 msgstr "Appliquer le code promotionnel"
 
@@ -1104,7 +1104,7 @@ msgstr "Ville"
 msgid "Clear Search Text"
 msgstr "Effacer le texte de recherche"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:285
+#: src/components/routes/product-widget/SelectProducts/index.tsx:288
 msgid "click here"
 msgstr "Cliquez ici"
 
@@ -1112,13 +1112,13 @@ msgstr "Cliquez ici"
 msgid "Click to copy"
 msgstr "Cliquez pour copier"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:473
+#: src/components/routes/product-widget/SelectProducts/index.tsx:476
 msgid "close"
 msgstr "fermer"
 
 #: src/components/common/AttendeeCheckInTable/QrScanner.tsx:186
 #: src/components/modals/RefundOrderModal/index.tsx:125
-#: src/components/routes/product-widget/SelectProducts/index.tsx:474
+#: src/components/routes/product-widget/SelectProducts/index.tsx:477
 msgid "Close"
 msgstr "Fermer"
 
@@ -1136,7 +1136,7 @@ msgstr "Code"
 msgid "Code must be between 3 and 50 characters long"
 msgstr "Le code doit comporter entre 3 et 50 caractères"
 
-#: src/components/forms/ProductForm/index.tsx:401
+#: src/components/forms/ProductForm/index.tsx:403
 msgid "Collapse this product when the event page is initially loaded"
 msgstr "Réduire ce produit lorsque la page de l'événement est initialement chargée"
 
@@ -1292,7 +1292,7 @@ msgstr "Couleur d'arrière-plan du contenu"
 #: src/components/common/WidgetEditor/index.tsx:217
 #: src/components/layouts/Checkout/CheckoutFooter/index.tsx:38
 #: src/components/routes/product-widget/CollectInformation/index.tsx:444
-#: src/components/routes/product-widget/SelectProducts/index.tsx:426
+#: src/components/routes/product-widget/SelectProducts/index.tsx:429
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1441,8 +1441,8 @@ msgstr "Créer un nouveau"
 msgid "Create Organizer"
 msgstr "Créer un organisateur"
 
-#: src/components/modals/CreateProductModal/index.tsx:80
-#: src/components/modals/CreateProductModal/index.tsx:88
+#: src/components/modals/CreateProductModal/index.tsx:81
+#: src/components/modals/CreateProductModal/index.tsx:89
 msgid "Create Product"
 msgstr "Créer un produit"
 
@@ -1667,7 +1667,7 @@ msgstr "Remise en {0}"
 msgid "Discount Type"
 msgstr "Type de remise"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:294
+#: src/components/routes/product-widget/SelectProducts/index.tsx:297
 msgid "Dismiss"
 msgstr "Rejeter"
 
@@ -1769,8 +1769,8 @@ msgid "Duplicate Options"
 msgstr "Options de duplication"
 
 #: src/components/common/ProductsTable/SortableProduct/index.tsx:285
-#: src/components/modals/DuplicateProductModal/index.tsx:109
-#: src/components/modals/DuplicateProductModal/index.tsx:113
+#: src/components/modals/DuplicateProductModal/index.tsx:111
+#: src/components/modals/DuplicateProductModal/index.tsx:115
 msgid "Duplicate Product"
 msgstr "Dupliquer le produit"
 
@@ -1855,8 +1855,8 @@ msgid "Edit Organizer"
 msgstr "Modifier l'organisateur"
 
 #: src/components/common/ProductsTable/SortableProduct/index.tsx:280
-#: src/components/modals/EditProductModal/index.tsx:100
-#: src/components/modals/EditProductModal/index.tsx:108
+#: src/components/modals/EditProductModal/index.tsx:103
+#: src/components/modals/EditProductModal/index.tsx:111
 msgid "Edit Product"
 msgstr "Modifier le produit"
 
@@ -2409,7 +2409,7 @@ msgstr "Ventes brutes"
 msgid "Guests"
 msgstr "Invités"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:435
+#: src/components/routes/product-widget/SelectProducts/index.tsx:438
 msgid "Have a promo code?"
 msgstr "Avez vous un code de réduction?"
 
@@ -2468,7 +2468,7 @@ msgid "Hidden questions are only visible to the event organizer and not to the c
 msgstr "Les questions masquées ne sont visibles que par l'organisateur de l'événement et non par le client."
 
 #: src/components/forms/ProductForm/index.tsx:344
-#: src/components/routes/product-widget/SelectProducts/index.tsx:400
+#: src/components/routes/product-widget/SelectProducts/index.tsx:403
 msgid "Hide"
 msgstr "Cacher"
 
@@ -2484,19 +2484,19 @@ msgstr "Masquer la page de démarrage"
 msgid "Hide hidden questions"
 msgstr "Masquer les questions cachées"
 
-#: src/components/forms/ProductForm/index.tsx:399
+#: src/components/forms/ProductForm/index.tsx:401
 msgid "Hide product after sale end date"
 msgstr "Masquer le produit après la date de fin de vente"
 
-#: src/components/forms/ProductForm/index.tsx:397
+#: src/components/forms/ProductForm/index.tsx:399
 msgid "Hide product before sale start date"
 msgstr "Masquer le produit avant la date de début de vente"
 
-#: src/components/forms/ProductForm/index.tsx:412
+#: src/components/forms/ProductForm/index.tsx:414
 msgid "Hide product unless user has applicable promo code"
 msgstr "Masquer le produit sauf si l'utilisateur a un code promo applicable"
 
-#: src/components/forms/ProductForm/index.tsx:405
+#: src/components/forms/ProductForm/index.tsx:407
 msgid "Hide product when sold out"
 msgstr "Masquer le produit lorsqu'il est épuisé"
 
@@ -2504,7 +2504,7 @@ msgstr "Masquer le produit lorsqu'il est épuisé"
 msgid "Hide the getting started page from the sidebar"
 msgstr "Masquer la page de démarrage de la barre latérale"
 
-#: src/components/forms/ProductForm/index.tsx:417
+#: src/components/forms/ProductForm/index.tsx:419
 msgid "Hide this product from customers"
 msgstr "Masquer ce produit des clients"
 
@@ -2593,7 +2593,7 @@ msgstr "Je souhaite payer en utilisant une méthode hors ligne"
 msgid "I would like to pay using an online method (credit card etc.)"
 msgstr "Je souhaite payer en utilisant une méthode en ligne (carte de crédit, etc.)"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:281
+#: src/components/routes/product-widget/SelectProducts/index.tsx:284
 msgid "If a new tab did not open, please  <0><1>{0}</1>.</0>"
 msgstr "Si aucun nouvel onglet ne s'ouvre, veuillez <0><1>{0}</1>.</0>"
 
@@ -3710,7 +3710,7 @@ msgstr "Paramètres de paiement"
 msgid "Payment Status"
 msgstr "Statut du paiement"
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:41
+#: src/components/forms/StripeCheckoutForm/index.tsx:60
 msgid "Payment succeeded!"
 msgstr "Paiement réussi !"
 
@@ -3764,7 +3764,7 @@ msgstr "Veuillez vérifier votre courrier électronique pour confirmer votre adr
 msgid "Please complete the form below to accept your invitation"
 msgstr "Veuillez remplir le formulaire ci-dessous pour accepter votre invitation"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:279
+#: src/components/routes/product-widget/SelectProducts/index.tsx:282
 msgid "Please continue in the new tab"
 msgstr "Veuillez continuer dans le nouvel onglet"
 
@@ -3804,7 +3804,7 @@ msgstr "Veuillez retourner sur la page de l'événement pour recommencer."
 msgid "Please select"
 msgstr "Veuillez sélectionner"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:234
+#: src/components/routes/product-widget/SelectProducts/index.tsx:237
 msgid "Please select at least one product"
 msgstr "Veuillez sélectionner au moins un produit"
 
@@ -4016,7 +4016,7 @@ msgstr "Profil"
 msgid "Profile updated successfully"
 msgstr "Mise à jour du profil réussie"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:175
+#: src/components/routes/product-widget/SelectProducts/index.tsx:178
 msgid "Promo {promo_code} code applied"
 msgstr "Code promotionnel {promo_code} appliqué"
 
@@ -4028,7 +4028,7 @@ msgstr "Code promo"
 msgid "Promo Code"
 msgstr "Code promo"
 
-#: src/components/forms/ProductForm/index.tsx:409
+#: src/components/forms/ProductForm/index.tsx:411
 msgid "Promo Code page"
 msgstr "Page des codes promotionnels"
 
@@ -4169,11 +4169,11 @@ msgstr "Registre"
 msgid "Remaining Uses"
 msgstr "Utilisations restantes"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:444
+#: src/components/routes/product-widget/SelectProducts/index.tsx:447
 msgid "remove"
 msgstr "retirer"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:445
+#: src/components/routes/product-widget/SelectProducts/index.tsx:448
 msgid "Remove"
 msgstr "Retirer"
 
@@ -4592,11 +4592,15 @@ msgstr "Partager sur X"
 msgid "Share via Email"
 msgstr "Partager par e-mail"
 
+#: src/components/forms/ProductForm/index.tsx:394
+msgid "Should this ticket be personalized?"
+msgstr ""
+
 #: src/components/forms/ProductForm/index.tsx:344
 msgid "Show"
 msgstr "Montrer"
 
-#: src/components/forms/ProductForm/index.tsx:403
+#: src/components/forms/ProductForm/index.tsx:405
 msgid "Show available product quantity"
 msgstr "Afficher la quantité de produit disponible"
 
@@ -4608,7 +4612,7 @@ msgstr "Afficher la quantité de produit disponible"
 msgid "Show hidden questions"
 msgstr "Afficher les questions masquées"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:399
+#: src/components/routes/product-widget/SelectProducts/index.tsx:402
 msgid "Show more"
 msgstr "Montre plus"
 
@@ -4684,7 +4688,7 @@ msgstr "Une erreur s'est produite, veuillez réessayer ou contacter le support s
 msgid "Something went wrong! Please try again"
 msgstr "Quelque chose s'est mal passé ! Veuillez réessayer"
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:50
+#: src/components/forms/StripeCheckoutForm/index.tsx:69
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
 
@@ -4705,7 +4709,7 @@ msgstr "Désolé, une erreur s'est produite lors du chargement de cette page."
 msgid "Sorry, this order no longer exists."
 msgstr "Désolé, cette commande n'existe plus."
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:243
+#: src/components/routes/product-widget/SelectProducts/index.tsx:246
 msgid "Sorry, this promo code is not recognized"
 msgstr "Désolé, ce code promo n'est pas reconnu"
 
@@ -4803,7 +4807,7 @@ msgstr "Changement d'e-mail confirmé avec succès"
 msgid "Successfully created attendee"
 msgstr "Participant créé avec succès"
 
-#: src/components/modals/CreateProductModal/index.tsx:54
+#: src/components/modals/CreateProductModal/index.tsx:55
 msgid "Successfully Created Product"
 msgstr "Produit créé avec succès"
 
@@ -4820,7 +4824,7 @@ msgstr "Question créée avec succès"
 #~ msgid "Successfully Created Ticket"
 #~ msgstr "Ticket créé avec succès"
 
-#: src/components/modals/DuplicateProductModal/index.tsx:95
+#: src/components/modals/DuplicateProductModal/index.tsx:97
 msgid "Successfully Duplicated Product"
 msgstr "Produit dupliqué avec succès"
 
@@ -4868,7 +4872,7 @@ msgstr "Commande mise à jour avec succès"
 msgid "Successfully Updated Payment & Invoicing Settings"
 msgstr "Paramètres de paiement et de facturation mis à jour avec succès"
 
-#: src/components/modals/EditProductModal/index.tsx:89
+#: src/components/modals/EditProductModal/index.tsx:92
 msgid "Successfully updated product"
 msgstr "Produit mis à jour avec succès"
 
@@ -4940,8 +4944,8 @@ msgstr "Impôts"
 msgid "Taxes and Fees"
 msgstr "Taxes et frais"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:135
-#: src/components/routes/product-widget/SelectProducts/index.tsx:183
+#: src/components/routes/product-widget/SelectProducts/index.tsx:138
+#: src/components/routes/product-widget/SelectProducts/index.tsx:186
 msgid "That promo code is invalid"
 msgstr "Ce code promotionnel n'est pas valide"
 
@@ -4972,7 +4976,7 @@ msgstr "La langue dans laquelle le participant recevra ses courriels."
 msgid "The link you clicked is invalid."
 msgstr "Le lien sur lequel vous avez cliqué n'est pas valide."
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:384
+#: src/components/routes/product-widget/SelectProducts/index.tsx:387
 msgid "The maximum number of products for {0}is {1}"
 msgstr "Le nombre maximum de produits pour {0} est {1}"
 
@@ -5012,11 +5016,11 @@ msgstr "Les taxes et frais à appliquer à ce produit. Vous pouvez créer de nou
 msgid "The title of the event that will be displayed in search engine results and when sharing on social media. By default, the event title will be used"
 msgstr "Le titre de l'événement qui sera affiché dans les résultats des moteurs de recherche et lors du partage sur les réseaux sociaux. Par défaut, le titre de l'événement sera utilisé"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:269
+#: src/components/routes/product-widget/SelectProducts/index.tsx:272
 msgid "There are no products available for this event"
 msgstr "Il n'y a pas de produits disponibles pour cet événement"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:315
+#: src/components/routes/product-widget/SelectProducts/index.tsx:318
 msgid "There are no products available in this category"
 msgstr "Il n'y a pas de produits disponibles dans cette catégorie"
 
@@ -5120,7 +5124,7 @@ msgstr "Ce message sera inclus dans le pied de page de tous les e-mails envoyés
 msgid "This message will only be shown if order is completed successfully. Orders awaiting payment will not show this message"
 msgstr "Ce message ne sera affiché que si la commande est terminée avec succès. Les commandes en attente de paiement n'afficheront pas ce message."
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:74
+#: src/components/forms/StripeCheckoutForm/index.tsx:93
 msgid "This order has already been paid."
 msgstr "Cette commande a déjà été payée."
 
@@ -5157,11 +5161,11 @@ msgstr "Cette commande est terminée."
 msgid "This order is processing."
 msgstr "Cette commande est en cours de traitement."
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:84
+#: src/components/forms/StripeCheckoutForm/index.tsx:103
 msgid "This order page is no longer available."
 msgstr "Cette page de commande n'est plus disponible."
 
-#: src/components/forms/ProductForm/index.tsx:415
+#: src/components/forms/ProductForm/index.tsx:417
 msgid "This overrides all visibility settings and will hide the product from all customers."
 msgstr "Cela remplace tous les paramètres de visibilité et masquera le produit de tous les clients."
 
@@ -5421,11 +5425,11 @@ msgstr "Impossible d'enregistrer le participant"
 msgid "Unable to check out attendee"
 msgstr "Impossible de sortir le participant"
 
-#: src/components/modals/CreateProductModal/index.tsx:63
+#: src/components/modals/CreateProductModal/index.tsx:64
 msgid "Unable to create product. Please check the your details"
 msgstr "Impossible de créer le produit. Veuillez vérifier vos détails"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:120
+#: src/components/routes/product-widget/SelectProducts/index.tsx:123
 msgid "Unable to create product. Please check your details"
 msgstr "Impossible de créer le produit. Veuillez vérifier vos détails"
 
@@ -5438,7 +5442,7 @@ msgstr "Impossible de créer une question. Veuillez vérifier vos coordonnées"
 #~ msgid "Unable to create ticket. Please check the your details"
 #~ msgstr "Impossible de créer un ticket. Veuillez vérifier vos coordonnées"
 
-#: src/components/modals/DuplicateProductModal/index.tsx:103
+#: src/components/modals/DuplicateProductModal/index.tsx:105
 msgid "Unable to duplicate product. Please check the your details"
 msgstr "Impossible de dupliquer le produit. Veuillez vérifier vos informations"
 
@@ -5467,7 +5471,7 @@ msgstr "Participant inconnu"
 msgid "Unlimited"
 msgstr "Illimité"
 
-#: src/components/routes/product-widget/SelectProducts/index.tsx:347
+#: src/components/routes/product-widget/SelectProducts/index.tsx:350
 msgid "Unlimited available"
 msgstr "Disponible illimité"
 
@@ -5622,8 +5626,8 @@ msgstr "Afficher sur Google Maps"
 #~ msgid "View order"
 #~ msgstr "Voir l'ordre"
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:75
-#: src/components/forms/StripeCheckoutForm/index.tsx:85
+#: src/components/forms/StripeCheckoutForm/index.tsx:94
+#: src/components/forms/StripeCheckoutForm/index.tsx:104
 #: src/components/routes/product-widget/CollectInformation/index.tsx:231
 msgid "View order details"
 msgstr "Voir d'autres détails"
@@ -5640,7 +5644,7 @@ msgstr "Liste de pointage VIP"
 msgid "VIP Ticket"
 msgstr "Billet VIP"
 
-#: src/components/forms/ProductForm/index.tsx:394
+#: src/components/forms/ProductForm/index.tsx:396
 msgid "Visibility"
 msgstr "Visibilité"
 
@@ -5871,13 +5875,13 @@ msgid "Working"
 msgstr "Fonctionnement"
 
 #: src/components/modals/CreateProductCategoryModal/index.tsx:60
-#: src/components/modals/CreateProductModal/index.tsx:88
+#: src/components/modals/CreateProductModal/index.tsx:89
 #: src/components/modals/CreatePromoCodeModal/index.tsx:56
 #: src/components/modals/CreateQuestionModal/index.tsx:74
 #: src/components/modals/DuplicateEventModal/index.tsx:142
-#: src/components/modals/DuplicateProductModal/index.tsx:113
+#: src/components/modals/DuplicateProductModal/index.tsx:115
 #: src/components/modals/EditProductCategoryModal/index.tsx:70
-#: src/components/modals/EditProductModal/index.tsx:108
+#: src/components/modals/EditProductModal/index.tsx:111
 #: src/components/modals/EditPromoCodeModal/index.tsx:84
 #: src/components/modals/EditQuestionModal/index.tsx:101
 #: src/components/modals/ManageAttendeeModal/index.tsx:231
@@ -5913,7 +5917,7 @@ msgstr "Vous changez votre adresse e-mail en <0>{0}</0>."
 msgid "You are offline"
 msgstr "Vous êtes hors ligne"
 
-#: src/components/forms/ProductForm/index.tsx:407
+#: src/components/forms/ProductForm/index.tsx:409
 msgid "You can create a promo code which targets this product on the"
 msgstr "Vous pouvez créer un code promo qui cible ce produit sur le"
 
@@ -6147,11 +6151,11 @@ msgstr "Vos commandes apparaîtront ici une fois qu’elles commenceront à arri
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:44
+#: src/components/forms/StripeCheckoutForm/index.tsx:63
 msgid "Your payment is processing."
 msgstr "Votre paiement est en cours de traitement."
 
-#: src/components/forms/StripeCheckoutForm/index.tsx:47
+#: src/components/forms/StripeCheckoutForm/index.tsx:66
 msgid "Your payment was not successful, please try again."
 msgstr "Votre paiement n'a pas abouti, veuillez réessayer."
 
