@@ -2,6 +2,8 @@ import React from "react";
 import {t} from "@lingui/macro";
 import {NavLink, useNavigate, useParams} from "react-router";
 import {Badge, Button, Group, SimpleGrid, Text} from "@mantine/core";
+import {useState} from "react";
+import {useDisclosure} from "@mantine/hooks";
 import {
     IconBuilding,
     IconCalendar,
@@ -13,7 +15,8 @@ import {
     IconMapPin,
     IconMenuOrder,
     IconPrinter,
-    IconUser
+    IconUser,
+    IconTicketOff
 } from "@tabler/icons-react";
 
 import {useGetOrderPublic} from "../../../../queries/useGetOrderPublic.ts";
@@ -33,6 +36,8 @@ import {CheckoutFooter} from "../../../layouts/Checkout/CheckoutFooter";
 
 import {Event, Order, Product} from "../../../../types.ts";
 import classes from './OrderSummaryAndProducts.module.scss';
+import {CancelAttendeeModal} from "../../../modals/CancelAttendeeModal";
+import {CancelOrderPublicModal} from "../../../modals/CancelOrderPublicModal";
 
 const PaymentStatus = ({order}: { order: Order }) => {
     const paymentStatuses: Record<string, string> = {
@@ -69,10 +74,32 @@ const OrderStatusType = ({order}: { order: Order }) => {
     const status = statuses[order?.status];
     if (!status) return null;
 
+    const [isCancelOrderModalOpen, cancelOrderModal] = useDisclosure(false);
+    const [orderShortIdModal, setOrderShortIdModal] = useState<string>();
+
+    const handleCancelOrderModalClick = (orderShortId: string, modal: { open: () => void }) => {
+        setOrderShortIdModal(orderShortId)
+        modal.open();
+    }
+
     return (
-        <Badge variant="outline" color={status.color}>
-            {status.label}
-        </Badge>
+        <div className={classes.orderBadgeDiv}>
+            <Badge variant="outline" color={status.color}>
+                {status.label}
+            </Badge>
+
+            {order.status !== 'CANCELLED' &&
+            <Button variant={'transparent'}
+                    size={'sm'}
+                    color={'red'}
+                    onClick={() => handleCancelOrderModalClick(order.short_id, cancelOrderModal)}
+                    leftSection={<IconTicketOff size={18}/>
+                    }>
+                {t`Cancel`}
+            </Button>}
+
+            {isCancelOrderModalOpen && <CancelOrderPublicModal onClose={cancelOrderModal.close} orderShortId={orderShortIdModal}/>}
+        </div>
     );
 };
 

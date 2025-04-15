@@ -1,5 +1,6 @@
 import {publicApi} from "./public-client.ts";
 import {
+    Attendee,
     GenericDataResponse,
     GenericPaginatedResponse,
     IdParam,
@@ -169,5 +170,10 @@ export const orderClientPublic = {
         });
 
         return new Blob([response.data]);
+    },
+
+    cancel: async (eventId: IdParam, orderShortId: string) => {
+        const response = await publicApi.post<GenericDataResponse<Order>>('events/' + eventId + '/order/' + orderShortId + '/cancel');
+        return response.data;
     },
 }

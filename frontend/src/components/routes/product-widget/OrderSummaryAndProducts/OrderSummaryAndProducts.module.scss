@@ -49,3 +49,20 @@
     white-space: normal;
   }
 }
+
+.orderBadgeDiv {
+  display: flex;
+  align-items: center;
+  align-content: center;
+
+  .cancelOrderButton {
+    color: red;
+    border: none;
+  }
+
+  // When the screen is smaller than 970px
+    @media (max-width: 970px) {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

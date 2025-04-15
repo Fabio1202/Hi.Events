@@ -118,6 +118,7 @@ export const AttendeeTicket = ({attendee, product, event, hideButtons = false}: 
                 {!hideButtons && attendee.product?.cancelable_product && (
                     <Button variant={'transparent'}
                             size={'sm'}
+                            color={'red'}
                             style={{marginTop: '20px'}}
                             onClick={() => handleModalClick(attendee.short_id, cancelModal)}
                             leftSection={<IconTicketOff size={18}/>
