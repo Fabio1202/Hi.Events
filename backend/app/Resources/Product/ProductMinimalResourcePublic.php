@@ -23,6 +23,7 @@ class ProductMinimalResourcePublic extends JsonResource
                 fn() => ProductPriceResourcePublic::collection($this->getProductPrices()),
             ),
             'product_category_id' => $this->getProductCategoryId(),
+            'cancelable_product' => $this->getCancelableProduct(),
         ];
     }
 }

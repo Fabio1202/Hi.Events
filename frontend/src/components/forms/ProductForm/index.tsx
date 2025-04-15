@@ -392,6 +392,8 @@ export const ProductForm = ({form, product}: ProductFormProps) => {
                     </InputGroup>
                     <Switch mt={15} {...form.getInputProps('personalized_product', {type: 'checkbox'})}
                             label={t`Should this ticket be personalized?`}/>
+                    <Switch mt={15} {...form.getInputProps('cancelable_product', {type: 'checkbox'})}
+                            label={t`Should this ticket be cancelable?`}/>
                     <h3>
                         {t`Visibility`}
                     </h3>

@@ -62,6 +62,7 @@ class ProductResource extends JsonResource
             ),
             'product_category_id' => $this->getProductCategoryId(),
             'personalized_product' => $this->getPersonalizedProduct(),
+            'cancelable_product' => $this->getCancelableProduct(),
         ];
     }
 }

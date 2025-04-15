@@ -1,5 +1,13 @@
 import {api} from "./client";
-import {Attendee, GenericDataResponse, GenericPaginatedResponse, IdParam, QueryFilters, TaxAndFee} from "../types";
+import {
+    Attendee,
+    GenericDataResponse,
+    GenericPaginatedResponse,
+    IdParam,
+    Order,
+    QueryFilters,
+    TaxAndFee
+} from "../types";
 import {queryParamsHelper} from "../utilites/queryParamsHelper.ts";
 import {publicApi} from "./public-client.ts";
 import {SupportedLocales} from "../locales.ts";
@@ -71,6 +79,11 @@ export const attendeesClient = {
 export const attendeeClientPublic = {
     findByShortId: async (eventId: IdParam, attendeeShortId: string) => {
         const response = await publicApi.get<GenericDataResponse<Partial<Attendee>>>(`events/${eventId}/attendees/${attendeeShortId}`);
+        return response.data;
+    },
+
+    cancel: async (eventId: IdParam, attendeeShortId: string) => {
+        const response = await publicApi.post<GenericDataResponse<Attendee>>('events/' + eventId + '/attendees/' + attendeeShortId + '/cancel');
         return response.data;
     },
 }

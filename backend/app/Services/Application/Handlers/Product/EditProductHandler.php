@@ -114,6 +114,7 @@ class EditProductHandler
                 'product_type' => $productsData->product_type->name,
                 'product_category_id' => $productCategory->getId(),
                 'personalized_product' => $productsData->personalized_product,
+                'cancelable_product' => $productsData->cancelable_product,
             ],
             where: $where
         );

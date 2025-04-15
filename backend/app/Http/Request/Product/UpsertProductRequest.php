@@ -42,6 +42,7 @@ class UpsertProductRequest extends BaseRequest
             'tax_and_fee_ids' => 'array',
             'product_category_id' => ['required', 'integer'],
             'personalized_product' => 'boolean',
+            'cancelable_product' => 'boolean',
         ];
     }
 

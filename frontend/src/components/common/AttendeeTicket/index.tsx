@@ -1,13 +1,17 @@
 import {Card} from "../Card";
 import {getAttendeeProductPrice, getAttendeeProductTitle} from "../../../utilites/products.ts";
-import {Anchor, Button, CopyButton} from "@mantine/core";
+import {Anchor, Button, CopyButton, Alert} from "@mantine/core";
 import {formatCurrency} from "../../../utilites/currency.ts";
 import {t} from "@lingui/macro";
+import {useDisclosure} from "@mantine/hooks";
 import {prettyDate} from "../../../utilites/dates.ts";
 import QRCode from "react-qr-code";
-import {IconCopy, IconPrinter} from "@tabler/icons-react";
-import {Attendee, Event, Product} from "../../../types.ts";
+import {IconCopy, IconPrinter, IconTicketOff, IconInfoCircle} from "@tabler/icons-react";
+import {Attendee, Event, IdParam, Product} from "../../../types.ts";
 import classes from './AttendeeTicket.module.scss';
+import {CancelOrderModal} from "../../modals/CancelOrderModal";
+import {useState} from "react";
+import {CancelAttendeeModal} from "../../modals/CancelAttendeeModal";
 
 interface AttendeeTicketProps {
     event: Event;
@@ -18,6 +22,15 @@ interface AttendeeTicketProps {
 
 export const AttendeeTicket = ({attendee, product, event, hideButtons = false}: AttendeeTicketProps) => {
     const productPrice = getAttendeeProductPrice(attendee, product);
+    const [isCancelAttendeeModalOpen, cancelModal] = useDisclosure(false);
+    const [attendeeShortId, setAttendeeShortId] = useState<string>();
+    console.log(attendee.product);
+    hideButtons = hideButtons || attendee.status === 'CANCELLED'
+
+    const handleModalClick = (attendeeShortId: string, modal: { open: () => void }) => {
+        setAttendeeShortId(attendeeShortId)
+        modal.open();
+    }
 
     return (
         <Card className={classes.attendee}>
@@ -101,7 +114,21 @@ export const AttendeeTicket = ({attendee, product, event, hideButtons = false}: 
                                  alt={`Add to Apple Wallet`}/>
                         </Button>
                 )}
+
+                {!hideButtons && attendee.product?.cancelable_product && (
+                    <Button variant={'transparent'}
+                            size={'sm'}
+                            style={{marginTop: '20px'}}
+                            onClick={() => handleModalClick(attendee.short_id, cancelModal)}
+                            leftSection={<IconTicketOff size={18}/>
+                            }>
+                        {t`Cancel`}
+                    </Button>
+                )}
+
             </div>
+
+            {isCancelAttendeeModalOpen && <CancelAttendeeModal onClose={cancelModal.close} attendeeShortId={attendeeShortId}/>}
         </Card>
     );
 }

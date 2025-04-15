@@ -39,6 +39,7 @@ export const EditProductModal = ({onClose, productId}: GenericModalProps & { pro
             product_type: ProductType.Ticket,
             product_category_id: undefined,
             personalized_product: undefined,
+            cancelable_product: undefined,
         },
     });
 
@@ -69,6 +70,7 @@ export const EditProductModal = ({onClose, productId}: GenericModalProps & { pro
             product_type: product.product_type,
             product_category_id: String(product.product_category_id),
             personalized_product: product.personalized_product,
+            cancelable_product: product.cancelable_product,
             prices: product.prices?.map(p => ({
                 price: p.price ?? 0,
                 label: p.label,

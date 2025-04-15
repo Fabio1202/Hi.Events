@@ -4,6 +4,7 @@ use HiEvents\Http\Actions\Accounts\CreateAccountAction;
 use HiEvents\Http\Actions\Accounts\GetAccountAction;
 use HiEvents\Http\Actions\Accounts\Stripe\CreateStripeConnectAccountAction;
 use HiEvents\Http\Actions\Accounts\UpdateAccountAction;
+use HiEvents\Http\Actions\Attendees\CancelAttendeeActionPublic;
 use HiEvents\Http\Actions\Attendees\CheckInAttendeeAction;
 use HiEvents\Http\Actions\Attendees\CreateApplePasskitActionPublic;
 use HiEvents\Http\Actions\Attendees\CreateAttendeeAction;
@@ -324,6 +325,7 @@ $router->prefix('/public')->group(
 
         // Attendees
         $router->get('/events/{event_id}/attendees/{attendee_short_id}', GetAttendeeActionPublic::class);
+        $router->post('/events/{event_id}/attendees/{attendee_short_id}/cancel', CancelAttendeeActionPublic::class);
         $router->get('/events/{event_id}/attendees/{attendee_short_id}/apple-wallet', CreateApplePasskitActionPublic::class);
         // Promo codes
         $router->get('/events/{event_id}/promo-codes/{promo_code}', GetPromoCodePublic::class);

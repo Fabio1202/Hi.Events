@@ -208,6 +208,7 @@ export interface Event extends EventBase {
     organizer_id?: IdParam;
     location_details?: VenueAddress;
     statistics?: EventStatistics;
+    apple_wallet_enabled?: boolean;
 }
 
 export interface EventStatistics {
@@ -375,6 +376,7 @@ export interface Product {
     is_hidden?: boolean;
     product_category_id?: IdParam;
     personalized_product?: boolean;
+    cancelable_product?: boolean;
 }
 
 export interface ProductCategory {
