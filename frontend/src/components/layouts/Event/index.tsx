@@ -159,25 +159,6 @@ const EventLayout = () => {
             </NavLink>
         );
     });
-    const handleStatusToggle = () => {
-        const message = event?.status === 'LIVE'
-            ? t`Are you sure you want to make this event draft? This will make the event invisible to the public`
-            : t`Are you sure you want to make this event public? This will make the event visible to the public`;
-
-        confirmationDialog(message, () => {
-            statusToggleMutation.mutate({
-                eventId,
-                status: event?.status === 'LIVE' ? 'DRAFT' : 'LIVE'
-            }, {
-                onSuccess: () => {
-                    showSuccess(t`Event status updated`);
-                },
-                onError: (error: any) => {
-                    showError(error?.response?.data?.message || t`Event status update failed. Please try again later`);
-                }
-            });
-        })
-    }
 
 
     return (
