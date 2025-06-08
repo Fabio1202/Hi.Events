@@ -37,7 +37,11 @@ class AttendeeRepository extends BaseRepository implements AttendeeRepositoryInt
 
         $this->model->select('attendees.*');
         $this->model->join('orders', 'orders.id', '=', 'attendees.order_id');
-        $this->model->whereIn('orders.status', [OrderStatus::COMPLETED->name, OrderStatus::CANCELLED->name]);
+        $this->model->whereIn('orders.status', [
+            OrderStatus::AWAITING_OFFLINE_PAYMENT->name,
+            OrderStatus::COMPLETED->name,
+            OrderStatus::CANCELLED->name
+        ]);
 
         $model = $this->model->limit(10000)->get();
         $this->resetModel();
@@ -118,7 +122,7 @@ class AttendeeRepository extends BaseRepository implements AttendeeRepositoryInt
 
         return $this->simplePaginateWhere(
             where: $where,
-            limit: 100,
+            limit: min($params->per_page, 250),
         );
     }
 }

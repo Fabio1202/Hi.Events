@@ -68,7 +68,19 @@ const EventHomepage = ({colors, continueButtonText, backgroundType, ...loaderDat
                 id={"event-homepage"}
                 className={classes.styleContainer}
             >
-                <div className={classes.container}>
+                <style>
+                    {`
+                        .initialContainerStyle {
+                            max-width: 1000px;
+                            margin: 30px auto;
+                            
+                            @media (max-width: 767px) {
+                                margin: 0;
+                            }
+                        }
+                    `}
+                </style>
+                <div className={`initialContainerStyle ${classes.container}`}>
                     <Header event={event}/>
                     <div className={classes.innerContainer}>
                         <div className={classes.eventInfo}>

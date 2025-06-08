@@ -9,25 +9,24 @@ use HiEvents\DomainObjects\EventDomainObject;
 use HiEvents\DomainObjects\OrganizerDomainObject;
 use HiEvents\Models\Event;
 use HiEvents\Models\Organizer;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use HiEvents\Services\Infrastructure\CurrencyConversion\CurrencyConversionClientInterface;
+use HiEvents\Services\Infrastructure\CurrencyConversion\NoOpCurrencyConversionClient;
+use HiEvents\Services\Infrastructure\CurrencyConversion\OpenExchangeRatesCurrencyConversionClient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Stripe\StripeClient;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public const MAIL_RATE_LIMIT_PER_SECOND = 'mail-rate-limit-per-second';
-
     public function register(): void
     {
         $this->bindDoctrineConnection();
         $this->bindStripeClient();
+        $this->bindCurrencyConversionClient();
     }
 
     /**
@@ -42,18 +41,6 @@ class AppServiceProvider extends ServiceProvider
         $this->disableLazyLoading();
 
         $this->registerMorphMaps();
-
-        $this->registerJobRateLimiters();
-    }
-
-    private function registerJobRateLimiters(): void
-    {
-        RateLimiter::for(
-            name: self::MAIL_RATE_LIMIT_PER_SECOND,
-            callback: static fn(ShouldQueue $job) => Limit::perMinute(
-                maxAttempts: config('mail.rate_limit_per_second')
-            )
-        );
     }
 
     private function bindDoctrineConnection(): void
@@ -129,5 +116,26 @@ class AppServiceProvider extends ServiceProvider
     private function disableLazyLoading(): void
     {
         Model::preventLazyLoading(!app()->isProduction());
+    }
+
+    private function bindCurrencyConversionClient(): void
+    {
+        $this->app->bind(
+            CurrencyConversionClientInterface::class,
+            function () {
+                if (config('services.open_exchange_rates.app_id')) {
+                    return new OpenExchangeRatesCurrencyConversionClient(
+                        apiKey: config('services.open_exchange_rates.app_id'),
+                        cache: $this->app->make('cache.store'),
+                        logger: $this->app->make('log')
+                    );
+                }
+
+                // Fallback to no-op client if no other client is available
+                return new NoOpCurrencyConversionClient(
+                    logger: $this->app->make('log')
+                );
+            }
+        );
     }
 }
